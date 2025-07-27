@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Market Insights - Career Mentor</title>
+  
+  <!-- External libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Custom styles -->
+  <style>
+    /* Base styles */
+    body {
+      background-color: #0f1729;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(51, 65, 85, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 75% 75%, rgba(79, 70, 229, 0.1) 0%, transparent 40%);
+      min-height: 100vh;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    /* Glassmorphism effect */
+    .dark-glassmorphism {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Card hover effect */
+    .feature-card {
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3);
+    }
+    
+    /* Glow effect */
+    .glow {
+      box-shadow: 0 0 15px rgba(79, 70, 229, 0.3);
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      transition: all 0.3s ease;
+    }
+    
+    /* Content */
+    .main-content {
+      width: calc(100% - 280px);
+      transition: all 0.3s ease;
+    }
+    
+    /* Mobile sidebar */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 0;
+        position: fixed;
+        z-index: 40;
+      }
+      
+      .sidebar.open {
+        width: 280px;
+      }
+      
+      .main-content {
+        width: 100%;
+      }
+    }
+    
+    /* Progress bars */
+    .progress-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(to right, #6366f1, #8b5cf6);
+      border-radius: 4px;
+    }
+    
+    /* Chart container */
+    .chart-container {
+      position: relative;
+      min-height: 250px;
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+  <!-- Top Navigation -->
+  <header class="dark-glassmorphism sticky top-0 z-30 border-b border-indigo-500/20">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center py-3">
+        <!-- Logo and mobile menu button -->
+        <div class="flex items-center space-x-4">
+          <button id="sidebar-toggle" class="lg:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800">
+            <i class="fas fa-bars"></i>
+          </button>
+          
+          <a href="dashboard.html" class="flex items-center space-x-2">
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
+              <i class="fas fa-robot text-white"></i>
+            </div>
+            <span class="text-xl font-bold text-white hidden md:inline-block">Career Mentor</span>
+          </a>
+        </div>
+        
+        <!-- Search and Navigation -->
+        <div class="hidden md:flex flex-1 max-w-xl mx-4">
+          <div class="relative w-full">
+            <input type="text" placeholder="Search for market insights, trends, or skills..." class="w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50">
+            <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
+          </div>
+        </div>
+        
+        <!-- User menu -->
+        <div class="flex items-center space-x-4">
+          <button class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 relative">
+            <i class="fas fa-bell"></i>
+            <span class="absolute top-1 right-1 w-2 h-2 bg-indigo-500 rounded-full"></span>
+          </button>
+          
+          <div class="relative">
+            <button id="user-menu-button" class="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-800">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-sm">
+                <span class="text-white text-sm font-medium" id="user-initials">U</span>
+              </div>
+              <span class="text-sm text-white hidden sm:inline-block" id="user-name">User</span>
+              <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+            </button>
+            
+            <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 dark-glassmorphism rounded-lg shadow-xl z-50 border border-indigo-500/20">
+              <div class="py-2 px-4 border-b border-indigo-500/20">
+                <p class="text-sm text-white font-medium" id="user-menu-name">User</p>
+                <p class="text-xs text-gray-400" id="user-menu-email">user@example.com</p>
+              </div>
+              <div class="py-1">
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">
+                  <i class="fas fa-user-circle mr-2 text-indigo-400"></i> Profile
+                </a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">
+                  <i class="fas fa-cog mr-2 text-indigo-400"></i> Settings
+                </a>
+                <button id="logout-button" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">
+                  <i class="fas fa-sign-out-alt mr-2 text-indigo-400"></i> Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar h-screen overflow-y-auto bg-gray-900 border-r border-indigo-500/20 hidden lg:block">
+      <nav class="p-4">
+        <div class="space-y-1">
+          <a href="dashboard.html" class="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+            <i class="fas fa-home text-indigo-400 w-5"></i>
+            <span class="ml-3">Dashboard</span>
+          </a>
+          
+          <a href="resume-analyzer.html" class="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+            <i class="fas fa-file-alt text-indigo-400 w-5"></i>
+            <span class="ml-3">Resume Analyzer</span>
+          </a>
+          
+          <a href="job-search.html" class="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+            <i class="fas fa-search text-indigo-400 w-5"></i>
+            <span class="ml-3">Job Search</span>
+          </a>
+          
+          <a href="job-autofill.html" class="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+            <i class="fas fa-file-import text-indigo-400 w-5"></i>
+            <span class="ml-3">Smart Job Autofill</span>
+          </a>
+          
+          <a href="market-insights.html" class="flex items-center px-4 py-3 text-white rounded-lg bg-indigo-500/20">
+            <i class="fas fa-chart-line text-indigo-400 w-5"></i>
+            <span class="ml-3">Market Insights</span>
+          </a>
+          
+          <a href="interview-prep.html" class="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+            <i class="fas fa-microphone text-indigo-400 w-5"></i>
+            <span class="ml-3">Interview Prep</span>
+          </a>
+          
+          <a href="learning-paths.html" class="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+            <i class="fas fa-graduation-cap text-indigo-400 w-5"></i>
+            <span class="ml-3">Learning Paths</span>
+          </a>
+        </div>
+        
+        <div class="mt-8">
+          <h3 class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Resources</h3>
+          <div class="mt-2 space-y-1">
+            <a href="#" class="flex items-center px-4 py-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+              <i class="fas fa-book-open text-indigo-400 w-5"></i>
+              <span class="ml-3">Career Guides</span>
+            </a>
+            
+            <a href="#" class="flex items-center px-4 py-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+              <i class="fas fa-video text-indigo-400 w-5"></i>
+              <span class="ml-3">Tutorial Videos</span>
+            </a>
+            
+            <a href="#" class="flex items-center px-4 py-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+              <i class="fas fa-users text-indigo-400 w-5"></i>
+              <span class="ml-3">Community</span>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mt-8">
+          <div class="px-4 py-3 dark-glassmorphism rounded-lg">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-medium text-white">Premium Plan</h3>
+              <span class="text-xs bg-indigo-500 text-white px-2 py-0.5 rounded-full">30 days</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 70%;"></div>
+            </div>
+            <p class="mt-2 text-xs text-gray-400">Access to all premium features</p>
+            <button class="mt-2 text-xs text-indigo-400 hover:text-indigo-300">Upgrade Plan</button>
+          </div>
+        </div>
+      </nav>
+    </aside>
+    
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content flex-1 overflow-y-auto px-4 py-8 md:px-8">
+      <!-- Page Header -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
+        <div>
+          <h1 class="text-3xl font-bold text-white">Market Insights</h1>
+          <p class="text-gray-400 mt-1">Stay ahead with AI-powered job market trends and analytics.</p>
+        </div>
+        
+        <div class="mt-4 md:mt-0 flex space-x-2">
+          <div class="relative">
+            <button id="industry-filter" class="px-4 py-2 bg-gray-800 text-gray-300 hover:text-white rounded-lg flex items-center transition-colors">
+              <span>All Industries</span>
+              <i class="fas fa-chevron-down ml-2 text-xs"></i>
+            </button>
+            
+            <div id="industry-menu" class="hidden absolute right-0 mt-2 w-48 dark-glassmorphism rounded-lg shadow-xl z-10 border border-indigo-500/20">
+              <div class="py-1">
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">All Industries</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">Technology</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">Healthcare</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">Finance</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">Education</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">Manufacturing</a>
+              </div>
+            </div>
+          </div>
+          
+          <div class="relative">
+            <button id="time-filter" class="px-4 py-2 bg-gray-800 text-gray-300 hover:text-white rounded-lg flex items-center transition-colors">
+              <span>Last 6 Months</span>
+              <i class="fas fa-chevron-down ml-2 text-xs"></i>
+            </button>
+            
+            <div id="time-menu" class="hidden absolute right-0 mt-2 w-48 dark-glassmorphism rounded-lg shadow-xl z-10 border border-indigo-500/20">
+              <div class="py-1">
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">Last 3 Months</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">Last 6 Months</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">Last Year</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">Last 2 Years</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Market Overview -->
+      <div class="dark-glassmorphism rounded-xl p-6 mb-8 border border-indigo-500/20">
+        <div class="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0">
+          <div class="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center shadow-lg glow mr-0 md:mr-6">
+            <i class="fas fa-chart-pie text-white text-3xl"></i>
+          </div>
+          
+          <div class="flex-1 text-center md:text-left">
+            <h2 class="text-2xl font-bold text-white">Market Overview</h2>
+            <p class="text-gray-300 mt-2">Our AI algorithms analyze millions of job postings, industry reports, and economic indicators to provide you with accurate market insights.</p>
+            <div class="mt-4 flex flex-wrap justify-center md:justify-start gap-2">
+              <a href="#job-trends" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm">
+                <i class="fas fa-chart-line mr-2"></i> Job Trends
+              </a>
+              <a href="#skill-demand" class="inline-flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm">
+                <i class="fas fa-brain mr-2"></i> Skill Demand
+              </a>
+              <a href="#salary-insights" class="inline-flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors text-sm">
+                <i class="fas fa-dollar-sign mr-2"></i> Salary Insights
+              </a>
+            </div>
+          </div>
+          
+          <div class="hidden lg:block ml-4 xl:ml-6">
+            <div class="dark-glassmorphism rounded-lg p-4 border border-indigo-500/20">
+              <div class="flex items-center mb-3">
+                <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center mr-3">
+                  <i class="fas fa-lightbulb text-blue-400"></i>
+                </div>
+                <h3 class="text-white font-medium">AI Prediction</h3>
+              </div>
+              <p class="text-gray-300 text-sm">Tech job market will grow by an estimated 15% in the next 12 months based on current trends.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Job Trends Section -->
+      <div id="job-trends" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Job Growth Trends -->
+        <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20 lg:col-span-2">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-white">Job Growth Trends</h3>
+            <div class="flex items-center">
+              <button class="px-3 py-1 text-xs rounded-lg bg-gray-800 text-gray-300 hover:text-white mr-2">
+                Monthly
+              </button>
+              <button class="px-3 py-1 text-xs rounded-lg bg-indigo-600 text-white">
+                Quarterly
+              </button>
+            </div>
+          </div>
+          
+          <div class="chart-container">
+            <canvas id="jobGrowthChart"></canvas>
+          </div>
+          
+          <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="text-center">
+              <p class="text-gray-400 text-xs">Software Development</p>
+              <p class="text-green-400 font-medium flex items-center justify-center">
+                <i class="fas fa-arrow-up mr-1"></i> 18.2%
+              </p>
+            </div>
+            <div class="text-center">
+              <p class="text-gray-400 text-xs">Data Science</p>
+              <p class="text-green-400 font-medium flex items-center justify-center">
+                <i class="fas fa-arrow-up mr-1"></i> 23.5%
+              </p>
+            </div>
+            <div class="text-center">
+              <p class="text-gray-400 text-xs">UX/UI Design</p>
+              <p class="text-green-400 font-medium flex items-center justify-center">
+                <i class="fas fa-arrow-up mr-1"></i> 15.7%
+              </p>
+            </div>
+            <div class="text-center">
+              <p class="text-gray-400 text-xs">Project Management</p>
+              <p class="text-red-400 font-medium flex items-center justify-center">
+                <i class="fas fa-arrow-down mr-1"></i> 2.3%
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Top Hiring Companies -->
+        <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+          <h3 class="text-xl font-bold text-white mb-6">Top Hiring Companies</h3>
+          
+          <div class="space-y-4">
+            <div class="flex items-center">
+              <div class="w-10 h-10 rounded bg-blue-500/20 flex items-center justify-center mr-3">
+                <span class="text-blue-400 font-medium">A</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="text-white">Amazon</h4>
+                <p class="text-gray-400 text-xs">+2,145 jobs this quarter</p>
+              </div>
+              <span class="text-green-400 text-sm">+15%</span>
+            </div>
+            
+            <div class="flex items-center">
+              <div class="w-10 h-10 rounded bg-green-500/20 flex items-center justify-center mr-3">
+                <span class="text-green-400 font-medium">M</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="text-white">Microsoft</h4>
+                <p class="text-gray-400 text-xs">+1,783 jobs this quarter</p>
+              </div>
+              <span class="text-green-400 text-sm">+12%</span>
+            </div>
+            
+            <div class="flex items-center">
+              <div class="w-10 h-10 rounded bg-purple-500/20 flex items-center justify-center mr-3">
+                <span class="text-purple-400 font-medium">G</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="text-white">Google</h4>
+                <p class="text-gray-400 text-xs">+1,572 jobs this quarter</p>
+              </div>
+              <span class="text-green-400 text-sm">+9%</span>
+            </div>
+            
+            <div class="flex items-center">
+              <div class="w-10 h-10 rounded bg-red-500/20 flex items-center justify-center mr-3">
+                <span class="text-red-400 font-medium">F</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="text-white">Facebook</h4>
+                <p class="text-gray-400 text-xs">+1,245 jobs this quarter</p>
+              </div>
+              <span class="text-green-400 text-sm">+8%</span>
+            </div>
+            
+            <div class="flex items-center">
+              <div class="w-10 h-10 rounded bg-yellow-500/20 flex items-center justify-center mr-3">
+                <span class="text-yellow-400 font-medium">A</span>
+              </div>
+              <div class="flex-1">
+                <h4 class="text-white">Apple</h4>
+                <p class="text-gray-400 text-xs">+1,103 jobs this quarter</p>
+              </div>
+              <span class="text-green-400 text-sm">+6%</span>
+            </div>
+          </div>
+          
+          <a href="#" class="block text-center text-indigo-400 hover:text-indigo-300 text-sm mt-4">
+            View all companies →
+          </a>
+        </div>
+      </div>
+      
+      <!-- Skill Demand Section -->
+      <div id="skill-demand" class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- In-Demand Skills -->
+        <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+          <h3 class="text-xl font-bold text-white mb-6">Most In-Demand Skills</h3>
+          
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-gray-300 flex items-center">
+                  <i class="fab fa-react text-blue-400 mr-2"></i> React.js
+                </span>
+                <span class="text-gray-400 text-sm">92%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 92%; background: linear-gradient(to right, #38bdf8, #818cf8);"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-gray-300 flex items-center">
+                  <i class="fab fa-python text-green-400 mr-2"></i> Python
+                </span>
+                <span class="text-gray-400 text-sm">87%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 87%; background: linear-gradient(to right, #22c55e, #16a34a);"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-gray-300 flex items-center">
+                  <i class="fas fa-database text-purple-400 mr-2"></i> SQL
+                </span>
+                <span class="text-gray-400 text-sm">82%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 82%; background: linear-gradient(to right, #a855f7, #8b5cf6);"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-gray-300 flex items-center">
+                  <i class="fab fa-aws text-yellow-400 mr-2"></i> AWS
+                </span>
+                <span class="text-gray-400 text-sm">78%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 78%; background: linear-gradient(to right, #facc15, #eab308);"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-gray-300 flex items-center">
+                  <i class="fas fa-brain text-pink-400 mr-2"></i> Machine Learning
+                </span>
+                <span class="text-gray-400 text-sm">75%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 75%; background: linear-gradient(to right, #ec4899, #d946ef);"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-gray-300 flex items-center">
+                  <i class="fas fa-mobile-alt text-red-400 mr-2"></i> React Native
+                </span>
+                <span class="text-gray-400 text-sm">71%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 71%; background: linear-gradient(to right, #ef4444, #dc2626);"></div>
+              </div>
+            </div>
+          </div>
+          
+          <a href="#" class="block text-center text-indigo-400 hover:text-indigo-300 text-sm mt-4">
+            View all skills →
+          </a>
+        </div>
+        
+        <!-- Skill Distribution -->
+        <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20 lg:col-span-2">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-white">Skill Distribution by Industry</h3>
+            <div class="flex items-center">
+              <button class="px-3 py-1 text-xs rounded-lg bg-indigo-600 text-white mr-2">
+                Technology
+              </button>
+              <button class="px-3 py-1 text-xs rounded-lg bg-gray-800 text-gray-300 hover:text-white">
+                Finance
+              </button>
+            </div>
+          </div>
+          
+          <div class="chart-container">
+            <canvas id="skillDistributionChart"></canvas>
+          </div>
+          
+          <div class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="bg-gray-800/50 rounded-lg p-3 text-center">
+              <h4 class="text-white text-sm font-medium">Web Development</h4>
+              <p class="text-indigo-400 font-medium mt-1">32%</p>
+            </div>
+            <div class="bg-gray-800/50 rounded-lg p-3 text-center">
+              <h4 class="text-white text-sm font-medium">Data Science</h4>
+              <p class="text-indigo-400 font-medium mt-1">24%</p>
+            </div>
+            <div class="bg-gray-800/50 rounded-lg p-3 text-center">
+              <h4 class="text-white text-sm font-medium">DevOps</h4>
+              <p class="text-indigo-400 font-medium mt-1">18%</p>
+            </div>
+            <div class="bg-gray-800/50 rounded-lg p-3 text-center">
+              <h4 class="text-white text-sm font-medium">UI/UX Design</h4>
+              <p class="text-indigo-400 font-medium mt-1">14%</p>
+            </div>
+            <div class="bg-gray-800/50 rounded-lg p-3 text-center">
+              <h4 class="text-white text-sm font-medium">Cybersecurity</h4>
+              <p class="text-indigo-400 font-medium mt-1">7%</p>
+            </div>
+            <div class="bg-gray-800/50 rounded-lg p-3 text-center">
+              <h4 class="text-white text-sm font-medium">Other</h4>
+              <p class="text-indigo-400 font-medium mt-1">5%</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Salary Insights Section -->
+      <div id="salary-insights" class="mb-8">
+        <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-white">Salary Insights</h3>
+            <div class="relative">
+              <button id="role-filter" class="px-3 py-1 text-xs rounded-lg bg-gray-800 text-gray-300 hover:text-white flex items-center">
+                <span>Software Engineer</span>
+                <i class="fas fa-chevron-down ml-2 text-xs"></i>
+              </button>
+              
+              <div id="role-menu" class="hidden absolute right-0 mt-2 w-48 dark-glassmorphism rounded-lg shadow-xl z-10 border border-indigo-500/20">
+                <div class="py-1">
+                  <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">Software Engineer</a>
+                  <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">Data Scientist</a>
+                  <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">UX Designer</a>
+                  <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">Product Manager</a>
+                  <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">DevOps Engineer</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2">
+              <div class="chart-container">
+                <canvas id="salaryRangeChart"></canvas>
+              </div>
+              
+              <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-gray-800/50 rounded-lg p-3 text-center">
+                  <h4 class="text-white text-sm font-medium">Entry Level</h4>
+                  <p class="text-indigo-400 font-medium mt-1">$75k - $95k</p>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-3 text-center">
+                  <h4 class="text-white text-sm font-medium">Mid Level</h4>
+                  <p class="text-indigo-400 font-medium mt-1">$95k - $130k</p>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-3 text-center">
+                  <h4 class="text-white text-sm font-medium">Senior Level</h4>
+                  <p class="text-indigo-400 font-medium mt-1">$130k - $175k</p>
+                </div>
+                <div class="bg-gray-800/50 rounded-lg p-3 text-center">
+                  <h4 class="text-white text-sm font-medium">Lead/Architect</h4>
+                  <p class="text-indigo-400 font-medium mt-1">$160k - $220k</p>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 mb-4">
+                <h4 class="text-white font-medium mb-2">Salary by Location</h4>
+                <div class="space-y-3">
+                  <div>
+                    <div class="flex justify-between items-center mb-1 text-sm">
+                      <span class="text-gray-300">San Francisco, CA</span>
+                      <span class="text-gray-400">$145,600</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div class="flex justify-between items-center mb-1 text-sm">
+                      <span class="text-gray-300">New York, NY</span>
+                      <span class="text-gray-400">$138,200</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 95%;"></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div class="flex justify-between items-center mb-1 text-sm">
+                      <span class="text-gray-300">Seattle, WA</span>
+                      <span class="text-gray-400">$132,800</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 91%;"></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div class="flex justify-between items-center mb-1 text-sm">
+                      <span class="text-gray-300">Austin, TX</span>
+                      <span class="text-gray-400">$118,500</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 81%;"></div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <div class="flex justify-between items-center mb-1 text-sm">
+                      <span class="text-gray-300">Chicago, IL</span>
+                      <span class="text-gray-400">$112,700</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 77%;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20">
+                <h4 class="text-white font-medium mb-2">Salary Growth</h4>
+                <p class="text-gray-300 text-sm mb-3">Annual salary growth rate for Software Engineers</p>
+                <div class="flex items-center justify-center">
+                  <div class="w-32 h-32 relative rounded-full flex items-center justify-center" style="background: conic-gradient(#6366f1 0% 85%, rgba(255, 255, 255, 0.1) 85% 100%);">
+                    <div class="w-24 h-24 rounded-full bg-gray-900 flex items-center justify-center">
+                      <div class="text-center">
+                        <span class="text-2xl font-bold text-white">8.5%</span>
+                        <p class="text-xs text-gray-400">per year</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-gray-400 text-xs text-center mt-3">Industry average: 4.2%</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Future Predictions -->
+      <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20 mb-8">
+        <div class="flex items-center mb-6">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg mr-4">
+            <i class="fas fa-robot text-white"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-white">AMI Predictions</h2>
+            <p class="text-gray-400 text-sm">AI-powered forecasts for the next 12 months</p>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-gray-800/50 rounded-xl p-4 border border-indigo-500/10">
+            <h3 class="text-white font-medium mb-2 flex items-center">
+              <i class="fas fa-rocket text-yellow-400 mr-2"></i>
+              Emerging Roles
+            </h3>
+            <ul class="text-gray-300 text-sm space-y-2">
+              <li>• AI Ethics Specialist (+245% growth)</li>
+              <li>• AR/VR Developer (+187% growth)</li>
+              <li>• Quantum Computing Engineer (+168% growth)</li>
+              <li>• Sustainability Tech Analyst (+142% growth)</li>
+            </ul>
+          </div>
+          
+          <div class="bg-gray-800/50 rounded-xl p-4 border border-indigo-500/10">
+            <h3 class="text-white font-medium mb-2 flex items-center">
+              <i class="fas fa-graduation-cap text-green-400 mr-2"></i>
+              Skills to Learn
+            </h3>
+            <ul class="text-gray-300 text-sm space-y-2">
+              <li>• WebAssembly (+215% demand)</li>
+              <li>• Edge Computing (+178% demand)</li>
+              <li>• NextJS & Server Components (+156% demand)</li>
+              <li>• GenAI Prompt Engineering (+132% demand)</li>
+            </ul>
+          </div>
+          
+          <div class="bg-gray-800/50 rounded-xl p-4 border border-indigo-500/10">
+            <h3 class="text-white font-medium mb-2 flex items-center">
+              <i class="fas fa-exclamation-triangle text-red-400 mr-2"></i>
+              Declining Areas
+            </h3>
+            <ul class="text-gray-300 text-sm space-y-2">
+              <li>• Legacy CMS Development (-32% demand)</li>
+              <li>• Basic Data Entry (-28% demand)</li>
+              <li>• Flash Development (-95% demand)</li>
+              <li>• Basic QA Testing (-18% demand)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Personalized Recommendations -->
+      <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20 mb-8">
+        <h3 class="text-xl font-bold text-white mb-4">Personalized Market Recommendations</h3>
+        <p class="text-gray-300 mb-6">Based on your profile, skills, and career goals, AMI has identified these market opportunities:</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 flex">
+            <div class="mr-4 flex-shrink-0">
+              <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center">
+                <i class="fas fa-code text-white text-xl"></i>
+              </div>
+            </div>
+            <div>
+              <h4 class="text-white font-medium">React Native Skills</h4>
+              <p class="text-gray-400 text-sm mt-1">Adding React Native to your skillset could increase your job matches by 34% and potential salary by 15%.</p>
+              <a href="learning-paths.html" class="text-indigo-400 hover:text-indigo-300 text-sm mt-2 inline-block">
+                Find courses →
+              </a>
+            </div>
+          </div>
+          
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 flex">
+            <div class="mr-4 flex-shrink-0">
+              <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center">
+                <i class="fas fa-sitemap text-white text-xl"></i>
+              </div>
+            </div>
+            <div>
+              <h4 class="text-white font-medium">Healthcare Tech Industry</h4>
+              <p class="text-gray-400 text-sm mt-1">The healthcare tech sector is growing 22% faster than average and aligns well with your current skills.</p>
+              <a href="job-search.html" class="text-indigo-400 hover:text-indigo-300 text-sm mt-2 inline-block">
+                Explore jobs →
+              </a>
+            </div>
+          </div>
+          
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 flex">
+            <div class="mr-4 flex-shrink-0">
+              <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                <i class="fas fa-map-marker-alt text-white text-xl"></i>
+              </div>
+            </div>
+            <div>
+              <h4 class="text-white font-medium">Remote Work Opportunities</h4>
+              <p class="text-gray-400 text-sm mt-1">Remote job postings for your role have increased by 45% with average salaries 12% higher than local positions.</p>
+              <a href="job-search.html" class="text-indigo-400 hover:text-indigo-300 text-sm mt-2 inline-block">
+                Find remote jobs →
+              </a>
+            </div>
+          </div>
+          
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 flex">
+            <div class="mr-4 flex-shrink-0">
+              <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-600 to-amber-600 flex items-center justify-center">
+                <i class="fas fa-certificate text-white text-xl"></i>
+              </div>
+            </div>
+            <div>
+              <h4 class="text-white font-medium">AWS Certification</h4>
+              <p class="text-gray-400 text-sm mt-1">Candidates with AWS certification earn 28% more on average and receive 64% more interview requests.</p>
+              <a href="learning-paths.html" class="text-indigo-400 hover:text-indigo-300 text-sm mt-2 inline-block">
+                Certification path →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <!-- AMI Chatbot Container -->
+  <div id="ami-chatbot">
+    <!-- Content will be dynamically generated by ami-chatbot.js -->
+  </div>
+  
+  <!-- Initialize -->
+  <script src="init.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize user info
+      const userName = localStorage.getItem('userName') || 'User';
+      const userEmail = localStorage.getItem('userEmail') || 'user@example.com';
+      
+      document.getElementById('user-name').textContent = userName;
+      document.getElementById('user-menu-name').textContent = userName;
+      document.getElementById('user-menu-email').textContent = userEmail;
+      
+      // Set user initials
+      const initials = userName.charAt(0).toUpperCase();
+      document.getElementById('user-initials').textContent = initials;
+      
+      // Initialize dropdown menus
+      initializeDropdownMenu('user-menu-button', 'user-menu');
+      initializeDropdownMenu('industry-filter', 'industry-menu');
+      initializeDropdownMenu('time-filter', 'time-menu');
+      initializeDropdownMenu('role-filter', 'role-menu');
+      
+      // Mobile sidebar toggle
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      
+      sidebarToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('hidden');
+        sidebarOverlay.classList.toggle('hidden');
+      });
+      
+      sidebarOverlay.addEventListener('click', function() {
+        sidebar.classList.add('hidden');
+        sidebarOverlay.classList.add('hidden');
+      });
+      
+      // Responsive behavior
+      function handleResize() {
+        if (window.innerWidth >= 1024) {
+          sidebar.classList.remove('hidden');
+          sidebarOverlay.classList.add('hidden');
+        } else {
+          sidebar.classList.add('hidden');
+        }
+      }
+      
+      window.addEventListener('resize', handleResize);
+      handleResize();
+      
+      // Initialize Charts
+      initializeJobGrowthChart();
+      initializeSkillDistributionChart();
+      initializeSalaryRangeChart();
+    });
+    
+    function initializeDropdownMenu(buttonId, menuId) {
+      const button = document.getElementById(buttonId);
+      const menu = document.getElementById(menuId);
+      
+      if (button && menu) {
+        button.addEventListener('click', function() {
+          menu.classList.toggle('hidden');
+        });
+        
+        document.addEventListener('click', function(event) {
+          if (!button.contains(event.target) && !menu.contains(event.target)) {
+            menu.classList.add('hidden');
+          }
+        });
+      }
+    }
+    
+    function initializeJobGrowthChart() {
+      const ctx = document.getElementById('jobGrowthChart').getContext('2d');
+      
+      const jobGrowthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q1', 'Q2'],
+          datasets: [
+            {
+              label: 'Software Development',
+              data: [125, 135, 150, 170, 185, 205],
+              borderColor: 'rgba(99, 102, 241, 1)',
+              backgroundColor: 'rgba(99, 102, 241, 0.1)',
+              tension: 0.4,
+              fill: true
+            },
+            {
+              label: 'Data Science',
+              data: [90, 105, 120, 135, 155, 175],
+              borderColor: 'rgba(52, 211, 153, 1)',
+              backgroundColor: 'rgba(52, 211, 153, 0.1)',
+              tension: 0.4,
+              fill: true
+            },
+            {
+              label: 'UX/UI Design',
+              data: [85, 95, 105, 115, 125, 135],
+              borderColor: 'rgba(251, 146, 60, 1)',
+              backgroundColor: 'rgba(251, 146, 60, 0.1)',
+              tension: 0.4,
+              fill: true
+            },
+            {
+              label: 'Project Management',
+              data: [110, 115, 112, 108, 105, 102],
+              borderColor: 'rgba(248, 113, 113, 1)',
+              backgroundColor: 'rgba(248, 113, 113, 0.1)',
+              tension: 0.4,
+              fill: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            },
+            tooltip: {
+              mode: 'index',
+              intersect: false
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            },
+            y: {
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              },
+              title: {
+                display: true,
+                text: 'Job Postings (thousands)',
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    function initializeSkillDistributionChart() {
+      const ctx = document.getElementById('skillDistributionChart').getContext('2d');
+      
+      const skillDistributionChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: [
+            'Web Development',
+            'Data Science',
+            'DevOps',
+            'UI/UX Design',
+            'Cybersecurity',
+            'Mobile Development'
+          ],
+          datasets: [
+            {
+              label: 'Skill Demand',
+              data: [85, 75, 65, 60, 55, 70],
+              backgroundColor: 'rgba(99, 102, 241, 0.2)',
+              borderColor: 'rgba(99, 102, 241, 1)',
+              pointBackgroundColor: 'rgba(99, 102, 241, 1)',
+              pointBorderColor: '#fff',
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: 'rgba(99, 102, 241, 1)'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            }
+          },
+          scales: {
+            r: {
+              angleLines: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              pointLabels: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              },
+              ticks: {
+                color: 'rgba(255, 255, 255, 0.7)',
+                backdropColor: 'transparent'
+              }
+            }
+          }
+        }
+      });
+    }
+    
+    function initializeSalaryRangeChart() {
+      const ctx = document.getElementById('salaryRangeChart').getContext('2d');
+      
+      const salaryRangeChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Entry Level', 'Mid Level', 'Senior Level', 'Lead/Architect'],
+          datasets: [
+            {
+              label: 'Minimum Salary',
+              data: [75000, 95000, 130000, 160000],
+              backgroundColor: 'rgba(99, 102, 241, 0.6)',
+              borderColor: 'rgba(99, 102, 241, 1)',
+              borderWidth: 1
+            },
+            {
+              label: 'Maximum Salary',
+              data: [95000, 130000, 175000, 220000],
+              backgroundColor: 'rgba(139, 92, 246, 0.6)',
+              borderColor: 'rgba(139, 92, 246, 1)',
+              borderWidth: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              labels: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) {
+                    label += ': ';
+                  }
+                  if (context.parsed.y !== null) {
+                    label += new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'USD',
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0
+                    }).format(context.parsed.y);
+                  }
+                  return label;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            },
+            y: {
+              grid: {
+                color: 'rgba(255, 255, 255, 0.1)'
+              },
+              ticks: {
+                color: 'rgba(255, 255, 255, 0.7)',
+                callback: function(value) {
+                  return '$' + value/1000 + 'k';
+                }
+              },
+              title: {
+                display: true,
+                text: 'Annual Salary (USD)',
+                color: 'rgba(255, 255, 255, 0.7)'
+              }
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html> 

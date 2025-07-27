@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Search - Career Mentor</title>
+  
+  <!-- External libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  
+  <!-- Application scripts -->
+  <script src="career-mentor-app.js"></script>
+  <script src="career-api.js"></script>
+  <script src="job-search.js"></script>
+  
+  <!-- Custom styles -->
+  <style>
+    body {
+      background-color: #0f1729;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(51, 65, 85, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 75% 75%, rgba(79, 70, 229, 0.1) 0%, transparent 40%);
+      min-height: 100vh;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .dark-glassmorphism {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .neon-glow {
+      text-shadow: 0 0 10px rgba(99, 102, 241, 0.5),
+                   0 0 20px rgba(99, 102, 241, 0.3),
+                   0 0 30px rgba(99, 102, 241, 0.2);
+    }
+    
+    .neon-border {
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.3),
+                  inset 0 0 10px rgba(99, 102, 241, 0.3);
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(-45deg, #0f1729, #1e293b, #312e81, #4c1d95);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .job-card {
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+    
+    .job-card:hover {
+      transform: translateY(-5px) translateZ(20px);
+      box-shadow: 0 25px 50px rgba(79, 70, 229, 0.4);
+    }
+    
+    .filter-tag {
+      transition: all 0.3s ease;
+    }
+    
+    .filter-tag:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+    }
+    
+    .match-score {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+    }
+    
+    #scene-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- 3D Background Scene -->
+  <div id="scene-container"></div>
+  
+  <!-- Navigation -->
+  <nav class="dark-glassmorphism sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <a href="index.html" class="flex items-center space-x-2">
+          <div class="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center">
+            <i class="fas fa-robot text-white text-xl"></i>
+          </div>
+          <span class="font-bold text-xl text-white">Career Mentor</span>
+        </a>
+        
+        <div class="flex items-center space-x-4">
+          <a href="dashboard.html" class="text-gray-300 hover:text-white transition-colors">
+            <i class="fas fa-home mr-2"></i>Dashboard
+          </a>
+          <a href="profile.html" class="text-gray-300 hover:text-white transition-colors">
+            <i class="fas fa-user mr-2"></i>Profile
+          </a>
+          <button onclick="logout()" class="text-gray-300 hover:text-white transition-colors">
+            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+      <!-- Search Header -->
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-white mb-4 neon-glow">Find Your Dream Job</h1>
+        <p class="text-gray-400">AI-powered job matching to help you find the perfect opportunity</p>
+      </div>
+      
+      <!-- Search Bar -->
+      <form class="search-form dark-glassmorphism rounded-xl p-6 mb-8">
+        <div class="flex flex-col md:flex-row gap-4">
+          <div class="flex-1">
+            <div class="relative">
+              <input type="text" class="w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg p-4 pl-12 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50" placeholder="Job title, skills, or company" style="color: black;">
+              <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+          </div>
+          <div class="flex-1">
+            <div class="relative">
+              <input type="text" class="w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg p-4 pl-12 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50" placeholder="Location" style="color: black;">
+              <i class="fas fa-map-marker-alt absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+          </div>
+          <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-lg font-medium transition-all duration-200">
+            <i class="fas fa-search mr-2"></i>Search
+          </button>
+        </div>
+      </form>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Filters Sidebar -->
+        <div class="lg:col-span-1 space-y-6">
+          <div class="dark-glassmorphism rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-6">Filters</h2>
+            
+            <!-- Job Type -->
+            <div class="mb-6">
+              <h3 class="text-white font-medium mb-4">Job Type</h3>
+              <div class="space-y-2">
+                <label class="flex items-center text-gray-300">
+                  <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600 rounded border-gray-600 bg-gray-800" checked>
+                  <span class="ml-2">Full-time</span>
+                </label>
+                <label class="flex items-center text-gray-300">
+                  <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600 rounded border-gray-600 bg-gray-800" checked>
+                  <span class="ml-2">Remote</span>
+                </label>
+                <label class="flex items-center text-gray-300">
+                  <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600 rounded border-gray-600 bg-gray-800">
+                  <span class="ml-2">Contract</span>
+                </label>
+                <label class="flex items-center text-gray-300">
+                  <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600 rounded border-gray-600 bg-gray-800">
+                  <span class="ml-2">Internship</span>
+                </label>
+              </div>
+            </div>
+            
+            <!-- Experience Level -->
+            <div class="mb-6">
+              <h3 class="text-white font-medium mb-4">Experience Level</h3>
+              <div class="space-y-2">
+                <label class="flex items-center text-gray-300">
+                  <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600 rounded border-gray-600 bg-gray-800" checked>
+                  <span class="ml-2">Entry Level</span>
+                </label>
+                <label class="flex items-center text-gray-300">
+                  <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600 rounded border-gray-600 bg-gray-800" checked>
+                  <span class="ml-2">Mid Level</span>
+                </label>
+                <label class="flex items-center text-gray-300">
+                  <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600 rounded border-gray-600 bg-gray-800">
+                  <span class="ml-2">Senior Level</span>
+                </label>
+                <label class="flex items-center text-gray-300">
+                  <input type="checkbox" class="form-checkbox h-5 w-5 text-indigo-600 rounded border-gray-600 bg-gray-800">
+                  <span class="ml-2">Lead</span>
+                </label>
+              </div>
+            </div>
+            
+            <!-- Salary Range -->
+            <div class="mb-6">
+              <h3 class="text-white font-medium mb-4">Salary Range</h3>
+              <div class="space-y-4">
+                <div class="flex items-center space-x-4">
+                  <input type="number" class="w-24 bg-gray-800/50 border border-indigo-500/30 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50" placeholder="Min">
+                  <span class="text-gray-400">to</span>
+                  <input type="number" class="w-24 bg-gray-800/50 border border-indigo-500/30 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50" placeholder="Max">
+                </div>
+                <div class="text-sm text-gray-400">Enter salary range in USD</div>
+              </div>
+            </div>
+            
+            <!-- Skills -->
+            <div class="mb-6">
+              <h3 class="text-white font-medium mb-4">Skills</h3>
+              <div class="flex flex-wrap gap-2">
+                <span class="filter-tag bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">JavaScript</span>
+                <span class="filter-tag bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">React</span>
+                <span class="filter-tag bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">Node.js</span>
+                <span class="filter-tag bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">Python</span>
+                <span class="filter-tag bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">AWS</span>
+                <span class="filter-tag bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">Docker</span>
+              </div>
+            </div>
+            
+            <!-- Apply Filters Button -->
+            <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium transition-all duration-200">
+              Apply Filters
+            </button>
+          </div>
+        </div>
+        
+        <!-- Job Listings -->
+        <div class="lg:col-span-3 space-y-6 job-listings">
+          <!-- Job Card 1 -->
+          <div class="job-card dark-glassmorphism rounded-xl p-6 relative">
+            <div class="match-score">95%</div>
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <h3 class="text-xl font-bold text-white mb-2">Senior Software Engineer</h3>
+                <div class="flex items-center space-x-4 text-gray-400">
+                  <span class="flex items-center">
+                    <i class="fas fa-building mr-2"></i>Tech Corp
+                  </span>
+                  <span class="flex items-center">
+                    <i class="fas fa-map-marker-alt mr-2"></i>San Francisco, CA
+                  </span>
+                  <span class="flex items-center">
+                    <i class="fas fa-dollar-sign mr-2"></i>120k - 180k
+                  </span>
+                </div>
+              </div>
+              <button class="bg-indigo-600/20 hover:bg-indigo-600/30 text-white px-4 py-2 rounded-lg transition-all duration-200">
+                <i class="fas fa-bookmark mr-2"></i>Save
+              </button>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">React</span>
+              <span class="bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">Node.js</span>
+              <span class="bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">AWS</span>
+              <span class="bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">TypeScript</span>
+            </div>
+            
+            <p class="text-gray-400 mb-4">
+              We're looking for an experienced Senior Software Engineer to join our team. You'll be working on cutting-edge technologies and helping to build scalable solutions.
+            </p>
+            
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-4 text-gray-400">
+                <span class="flex items-center">
+                  <i class="fas fa-clock mr-2"></i>Full-time
+                </span>
+                <span class="flex items-center">
+                  <i class="fas fa-briefcase mr-2"></i>5+ years
+                </span>
+              </div>
+              <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200">
+                Apply Now
+              </button>
+            </div>
+          </div>
+          
+          <!-- Job Card 2 -->
+          <div class="job-card dark-glassmorphism rounded-xl p-6 relative">
+            <div class="match-score">88%</div>
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <h3 class="text-xl font-bold text-white mb-2">Full Stack Developer</h3>
+                <div class="flex items-center space-x-4 text-gray-400">
+                  <span class="flex items-center">
+                    <i class="fas fa-building mr-2"></i>StartUp Inc
+                  </span>
+                  <span class="flex items-center">
+                    <i class="fas fa-map-marker-alt mr-2"></i>Remote
+                  </span>
+                  <span class="flex items-center">
+                    <i class="fas fa-dollar-sign mr-2"></i>90k - 140k
+                  </span>
+                </div>
+              </div>
+              <button class="bg-indigo-600/20 hover:bg-indigo-600/30 text-white px-4 py-2 rounded-lg transition-all duration-200">
+                <i class="fas fa-bookmark mr-2"></i>Save
+              </button>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">JavaScript</span>
+              <span class="bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">Python</span>
+              <span class="bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">Docker</span>
+              <span class="bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">MongoDB</span>
+            </div>
+            
+            <p class="text-gray-400 mb-4">
+              Join our fast-growing startup as a Full Stack Developer. Work on exciting projects and help shape the future of our product.
+            </p>
+            
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-4 text-gray-400">
+                <span class="flex items-center">
+                  <i class="fas fa-clock mr-2"></i>Full-time
+                </span>
+                <span class="flex items-center">
+                  <i class="fas fa-briefcase mr-2"></i>3+ years
+                </span>
+              </div>
+              <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200">
+                Apply Now
+              </button>
+            </div>
+          </div>
+          
+          <!-- Job Card 3 -->
+          <div class="job-card dark-glassmorphism rounded-xl p-6 relative">
+            <div class="match-score">82%</div>
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <h3 class="text-xl font-bold text-white mb-2">Frontend Developer</h3>
+                <div class="flex items-center space-x-4 text-gray-400">
+                  <span class="flex items-center">
+                    <i class="fas fa-building mr-2"></i>Design Studio
+                  </span>
+                  <span class="flex items-center">
+                    <i class="fas fa-map-marker-alt mr-2"></i>New York, NY
+                  </span>
+                  <span class="flex items-center">
+                    <i class="fas fa-dollar-sign mr-2"></i>80k - 120k
+                  </span>
+                </div>
+              </div>
+              <button class="bg-indigo-600/20 hover:bg-indigo-600/30 text-white px-4 py-2 rounded-lg transition-all duration-200">
+                <i class="fas fa-bookmark mr-2"></i>Save
+              </button>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span class="bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">React</span>
+              <span class="bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">TypeScript</span>
+              <span class="bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">CSS</span>
+              <span class="bg-indigo-900/30 text-indigo-300 px-3 py-1 rounded-full text-sm">UI/UX</span>
+            </div>
+            
+            <p class="text-gray-400 mb-4">
+              We're seeking a talented Frontend Developer to create beautiful and responsive user interfaces for our clients.
+            </p>
+            
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-4 text-gray-400">
+                <span class="flex items-center">
+                  <i class="fas fa-clock mr-2"></i>Full-time
+                </span>
+                <span class="flex items-center">
+                  <i class="fas fa-briefcase mr-2"></i>2+ years
+                </span>
+              </div>
+              <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200">
+                Apply Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    // Initialize 3D scene
+    function initScene() {
+      const container = document.getElementById('scene-container');
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ alpha: true });
+      
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      container.appendChild(renderer.domElement);
+      
+      // Create floating particles
+      const particles = [];
+      const particleCount = 100;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const geometry = new THREE.SphereGeometry(0.1, 8, 8);
+        const material = new THREE.MeshBasicMaterial({
+          color: 0x6366f1,
+          transparent: true,
+          opacity: 0.5
+        });
+        
+        const particle = new THREE.Mesh(geometry, material);
+        particle.position.set(
+          Math.random() * 40 - 20,
+          Math.random() * 40 - 20,
+          Math.random() * 40 - 20
+        );
+        
+        particles.push({
+          mesh: particle,
+          speed: Math.random() * 0.02 + 0.01,
+          rotation: Math.random() * Math.PI * 2
+        });
+        
+        scene.add(particle);
+      }
+      
+      camera.position.z = 30;
+      
+      function animate() {
+        requestAnimationFrame(animate);
+        
+        particles.forEach(particle => {
+          particle.mesh.position.y += particle.speed;
+          particle.mesh.rotation.y += 0.01;
+          
+          if (particle.mesh.position.y > 20) {
+            particle.mesh.position.y = -20;
+          }
+        });
+        
+        renderer.render(scene, camera);
+      }
+      
+      animate();
+      
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+    
+    // Initialize scene when page loads
+    document.addEventListener('DOMContentLoaded', initScene);
+    
+    // Logout function
+    function logout() {
+      localStorage.removeItem('isLoggedIn');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

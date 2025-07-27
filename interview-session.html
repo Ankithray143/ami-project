@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interview Session - Career Mentor</title>
+  
+  <!-- External libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <!-- Custom styles -->
+  <style>
+    /* Base styles */
+    body {
+      background-color: #0f1729;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(51, 65, 85, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 75% 75%, rgba(79, 70, 229, 0.1) 0%, transparent 40%);
+      min-height: 100vh;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    /* Glassmorphism effect */
+    .dark-glassmorphism {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Progress bar animation */
+    @keyframes progress {
+      0% { width: 0; }
+      100% { width: 100%; }
+    }
+
+    .progress-animation {
+      animation: progress 30s linear forwards;
+    }
+
+    /* Typing animation */
+    .typing-animation::after {
+      content: '|';
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+  <!-- Top Navigation -->
+  <header class="dark-glassmorphism sticky top-0 z-30 border-b border-indigo-500/20">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center py-3">
+        <!-- Logo -->
+        <a href="dashboard.html" class="flex items-center space-x-2">
+          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
+            <i class="fas fa-robot text-white"></i>
+          </div>
+          <span class="text-xl font-bold text-white">Career Mentor</span>
+        </a>
+        
+        <!-- User menu -->
+        <div class="flex items-center space-x-4">
+          <a href="interview-prep.html" class="text-gray-400 hover:text-white">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Interview Prep
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="flex-1 container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+      <!-- Interview Session Header -->
+      <div class="dark-glassmorphism rounded-xl p-6 mb-8 border border-indigo-500/20">
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-2xl font-bold text-white">Interview Session</h1>
+            <p class="text-gray-400 mt-2" id="interview-type-display">Technical Interview for Frontend Developer</p>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="text-gray-400">
+              <span id="current-question">1</span>/<span id="total-questions">10</span>
+            </div>
+            <div class="w-32 h-2 bg-gray-700 rounded-full overflow-hidden">
+              <div id="progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 w-0"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Interview Content -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Interview Area -->
+        <div class="lg:col-span-2">
+          <!-- Question Display -->
+          <div id="question-container" class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20 mb-6">
+            <div class="flex items-start space-x-4">
+              <div class="w-10 h-10 rounded-full bg-indigo-600/30 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-user-tie text-indigo-400"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-white font-medium mb-2">Interviewer</h3>
+                <div id="question-text" class="text-gray-300">
+                  Tell me about your experience with React and how you've used it in your previous projects.
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Answer Input -->
+          <div id="answer-container" class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+            <div class="flex items-start space-x-4">
+              <div class="w-10 h-10 rounded-full bg-indigo-600/30 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-user text-indigo-400"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-white font-medium mb-2">Your Answer</h3>
+                <div class="relative">
+                  <textarea id="answer-input" rows="6" class="w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50" placeholder="Type your answer here..." style="color: black;"></textarea>
+                  <div class="mt-4 flex justify-between items-center">
+                    <div>
+                      <span id="time-remaining" class="text-gray-400">Time remaining: 2:00</span>
+                    </div>
+                    <div class="flex space-x-3">
+                      <button id="skip-button" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                        Skip
+                      </button>
+                      <button id="submit-button" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg transition-colors">
+                        Submit Answer
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Feedback (Hidden initially) -->
+          <div id="feedback-container" class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20 mt-6 hidden">
+            <div class="flex items-start space-x-4">
+              <div class="w-10 h-10 rounded-full bg-indigo-600/30 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-robot text-indigo-400"></i>
+              </div>
+              <div class="flex-1">
+                <h3 class="text-white font-medium mb-2">AI Feedback</h3>
+                <div id="feedback-text" class="text-gray-300">
+                  <!-- Feedback will be inserted here -->
+                </div>
+                <div class="mt-4">
+                  <button id="next-question-button" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg transition-colors">
+                    Next Question
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Results (Hidden initially) -->
+          <div id="results-container" class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20 mt-6 hidden">
+            <h3 class="text-xl font-bold text-white mb-4">Interview Results</h3>
+            
+            <div class="mb-6">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-gray-300">Overall Score</span>
+                <span id="overall-score" class="text-white font-bold">85%</span>
+              </div>
+              <div class="w-full h-3 bg-gray-700 rounded-full overflow-hidden">
+                <div id="score-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500" style="width: 85%"></div>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <div class="bg-gray-800/50 rounded-lg p-4 border border-indigo-500/10">
+                <h4 class="text-white font-medium mb-3">Strengths</h4>
+                <ul id="strengths-list" class="text-gray-300 space-y-2 list-disc pl-5">
+                  <li>Strong technical knowledge</li>
+                  <li>Clear communication</li>
+                  <li>Good problem-solving approach</li>
+                </ul>
+              </div>
+              
+              <div class="bg-gray-800/50 rounded-lg p-4 border border-indigo-500/10">
+                <h4 class="text-white font-medium mb-3">Areas for Improvement</h4>
+                <ul id="improvements-list" class="text-gray-300 space-y-2 list-disc pl-5">
+                  <li>Provide more specific examples</li>
+                  <li>Elaborate on technical implementations</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="flex justify-between">
+              <button id="review-answers-button" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors">
+                Review Answers
+              </button>
+              <button id="finish-button" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-lg transition-colors">
+                Finish & Return
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Interview Tips & Info -->
+        <div class="lg:col-span-1">
+          <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20 sticky top-24">
+            <h2 class="text-lg font-semibold text-white mb-6">Interview Tips</h2>
+            
+            <div class="space-y-4 mb-6">
+              <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-lightbulb text-indigo-400"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-white">Be Specific</h3>
+                  <p class="text-sm text-gray-400 mt-1">Use concrete examples from your experience.</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-clock text-indigo-400"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-white">Manage Time</h3>
+                  <p class="text-sm text-gray-400 mt-1">Keep answers concise but complete.</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-star text-indigo-400"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-white">Highlight Achievements</h3>
+                  <p class="text-sm text-gray-400 mt-1">Quantify results when possible.</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="border-t border-indigo-500/20 pt-6">
+              <h3 class="text-white font-medium mb-3">Session Info</h3>
+              <div class="space-y-3">
+                <div>
+                  <p class="text-sm text-gray-400">Job Title</p>
+                  <p id="job-title-display" class="text-white">Frontend Developer</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-400">Experience Level</p>
+                  <p id="experience-level-display" class="text-white">Mid Level (2-5 years)</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-400">Key Skills</p>
+                  <div id="skills-display" class="flex flex-wrap gap-2 mt-1">
+                    <span class="px-2 py-1 rounded-full bg-indigo-900/50 text-indigo-300 text-xs border border-indigo-500/30">JavaScript</span>
+                    <span class="px-2 py-1 rounded-full bg-indigo-900/50 text-indigo-300 text-xs border border-indigo-500/30">React</span>
+                    <span class="px-2 py-1 rounded-full bg-indigo-900/50 text-indigo-300 text-xs border border-indigo-500/30">CSS</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Initialize -->
+  <script src="init.js"></script>
+  <script src="interview-session.js"></script>
+</body>
+</html>

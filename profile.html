@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - Career Mentor</title>
+  
+  <!-- External libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  
+  <!-- Custom styles -->
+  <style>
+    body {
+      background-color: #0f1729;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(51, 65, 85, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 75% 75%, rgba(79, 70, 229, 0.1) 0%, transparent 40%);
+      min-height: 100vh;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .dark-glassmorphism {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+    
+    .neon-glow {
+      text-shadow: 0 0 10px rgba(99, 102, 241, 0.5),
+                   0 0 20px rgba(99, 102, 241, 0.3),
+                   0 0 30px rgba(99, 102, 241, 0.2);
+    }
+    
+    .neon-border {
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.3),
+                  inset 0 0 10px rgba(99, 102, 241, 0.3);
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(-45deg, #0f1729, #1e293b, #312e81, #4c1d95);
+      background-size: 400% 400%;
+      animation: gradient 15s ease infinite;
+    }
+    
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    
+    .profile-card {
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+    
+    .profile-card:hover {
+      transform: translateY(-5px) translateZ(20px);
+      box-shadow: 0 25px 50px rgba(79, 70, 229, 0.4);
+    }
+    
+    .skill-badge {
+      transition: all 0.3s ease;
+    }
+    
+    .skill-badge:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+    }
+    
+    #scene-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- 3D Background Scene -->
+  <div id="scene-container"></div>
+  
+  <!-- Navigation -->
+  <nav class="dark-glassmorphism sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <a href="index.html" class="flex items-center space-x-2">
+          <div class="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center">
+            <i class="fas fa-robot text-white text-xl"></i>
+          </div>
+          <span class="font-bold text-xl text-white">Career Mentor</span>
+        </a>
+        
+        <div class="flex items-center space-x-4">
+          <a href="dashboard.html" class="text-gray-300 hover:text-white transition-colors">
+            <i class="fas fa-home mr-2"></i>Dashboard
+          </a>
+          <a href="settings.html" class="text-gray-300 hover:text-white transition-colors">
+            <i class="fas fa-cog mr-2"></i>Settings
+          </a>
+          <button onclick="logout()" class="text-gray-300 hover:text-white transition-colors">
+            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Profile Card -->
+      <div class="lg:col-span-1">
+        <div class="profile-card dark-glassmorphism rounded-xl p-6">
+          <div class="text-center mb-6">
+            <div class="relative w-32 h-32 mx-auto mb-4">
+              <img src="https://via.placeholder.com/128" alt="Profile" class="w-full h-full rounded-full object-cover border-4 border-indigo-500">
+              <button class="absolute bottom-0 right-0 bg-indigo-600 text-white p-2 rounded-full hover:bg-indigo-700 transition-colors">
+                <i class="fas fa-camera"></i>
+              </button>
+            </div>
+            <h1 class="text-2xl font-bold text-white mb-2">John Doe</h1>
+            <p class="text-gray-400">Senior Software Engineer</p>
+            <div class="flex justify-center space-x-4 mt-4">
+              <a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">
+                <i class="fab fa-linkedin text-xl"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">
+                <i class="fab fa-github text-xl"></i>
+              </a>
+              <a href="#" class="text-gray-400 hover:text-indigo-400 transition-colors">
+                <i class="fab fa-twitter text-xl"></i>
+              </a>
+            </div>
+          </div>
+          
+          <div class="space-y-4">
+            <div>
+              <h3 class="text-white font-semibold mb-2">About Me</h3>
+              <p class="text-gray-400 text-sm">
+                Passionate software engineer with 5+ years of experience in full-stack development.
+                Specialized in React, Node.js, and cloud technologies.
+              </p>
+            </div>
+            
+            <div>
+              <h3 class="text-white font-semibold mb-2">Contact</h3>
+              <div class="space-y-2">
+                <div class="flex items-center text-gray-400">
+                  <i class="fas fa-envelope mr-2"></i>
+                  john.doe@example.com
+                </div>
+                <div class="flex items-center text-gray-400">
+                  <i class="fas fa-phone mr-2"></i>
+                  +1 (555) 123-4567
+                </div>
+                <div class="flex items-center text-gray-400">
+                  <i class="fas fa-map-marker-alt mr-2"></i>
+                  San Francisco, CA
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Main Profile Content -->
+      <div class="lg:col-span-2 space-y-8">
+        <!-- Skills Section -->
+        <div class="dark-glassmorphism rounded-xl p-6">
+          <h2 class="text-xl font-bold text-white mb-6">Skills & Expertise</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="skill-badge bg-indigo-900/30 rounded-lg p-4 text-center">
+              <i class="fab fa-react text-3xl text-indigo-400 mb-2"></i>
+              <p class="text-white">React</p>
+              <div class="w-full bg-indigo-900/50 rounded-full h-2 mt-2">
+                <div class="bg-indigo-500 h-2 rounded-full" style="width: 90%"></div>
+              </div>
+            </div>
+            <div class="skill-badge bg-indigo-900/30 rounded-lg p-4 text-center">
+              <i class="fab fa-node-js text-3xl text-indigo-400 mb-2"></i>
+              <p class="text-white">Node.js</p>
+              <div class="w-full bg-indigo-900/50 rounded-full h-2 mt-2">
+                <div class="bg-indigo-500 h-2 rounded-full" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="skill-badge bg-indigo-900/30 rounded-lg p-4 text-center">
+              <i class="fab fa-aws text-3xl text-indigo-400 mb-2"></i>
+              <p class="text-white">AWS</p>
+              <div class="w-full bg-indigo-900/50 rounded-full h-2 mt-2">
+                <div class="bg-indigo-500 h-2 rounded-full" style="width: 80%"></div>
+              </div>
+            </div>
+            <div class="skill-badge bg-indigo-900/30 rounded-lg p-4 text-center">
+              <i class="fas fa-database text-3xl text-indigo-400 mb-2"></i>
+              <p class="text-white">SQL</p>
+              <div class="w-full bg-indigo-900/50 rounded-full h-2 mt-2">
+                <div class="bg-indigo-500 h-2 rounded-full" style="width: 75%"></div>
+              </div>
+            </div>
+            <div class="skill-badge bg-indigo-900/30 rounded-lg p-4 text-center">
+              <i class="fab fa-docker text-3xl text-indigo-400 mb-2"></i>
+              <p class="text-white">Docker</p>
+              <div class="w-full bg-indigo-900/50 rounded-full h-2 mt-2">
+                <div class="bg-indigo-500 h-2 rounded-full" style="width: 70%"></div>
+              </div>
+            </div>
+            <div class="skill-badge bg-indigo-900/30 rounded-lg p-4 text-center">
+              <i class="fab fa-git-alt text-3xl text-indigo-400 mb-2"></i>
+              <p class="text-white">Git</p>
+              <div class="w-full bg-indigo-900/50 rounded-full h-2 mt-2">
+                <div class="bg-indigo-500 h-2 rounded-full" style="width: 95%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Experience Section -->
+        <div class="dark-glassmorphism rounded-xl p-6">
+          <h2 class="text-xl font-bold text-white mb-6">Work Experience</h2>
+          <div class="space-y-6">
+            <div class="border-l-2 border-indigo-500 pl-4">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="text-white font-semibold">Senior Software Engineer</h3>
+                  <p class="text-indigo-400">Tech Corp</p>
+                </div>
+                <span class="text-gray-400">2020 - Present</span>
+              </div>
+              <p class="text-gray-400 mt-2">
+                Leading a team of 5 developers in building scalable web applications.
+                Implemented microservices architecture and improved system performance by 40%.
+              </p>
+            </div>
+            
+            <div class="border-l-2 border-indigo-500 pl-4">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="text-white font-semibold">Software Engineer</h3>
+                  <p class="text-indigo-400">StartUp Inc</p>
+                </div>
+                <span class="text-gray-400">2018 - 2020</span>
+              </div>
+              <p class="text-gray-400 mt-2">
+                Developed and maintained multiple client-facing applications.
+                Reduced bug reports by 60% through improved testing practices.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Education Section -->
+        <div class="dark-glassmorphism rounded-xl p-6">
+          <h2 class="text-xl font-bold text-white mb-6">Education</h2>
+          <div class="space-y-6">
+            <div class="border-l-2 border-indigo-500 pl-4">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="text-white font-semibold">Master of Computer Science</h3>
+                  <p class="text-indigo-400">Stanford University</p>
+                </div>
+                <span class="text-gray-400">2016 - 2018</span>
+              </div>
+              <p class="text-gray-400 mt-2">
+                Specialized in Machine Learning and Distributed Systems.
+                GPA: 3.8/4.0
+              </p>
+            </div>
+            
+            <div class="border-l-2 border-indigo-500 pl-4">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="text-white font-semibold">Bachelor of Computer Science</h3>
+                  <p class="text-indigo-400">UC Berkeley</p>
+                </div>
+                <span class="text-gray-400">2012 - 2016</span>
+              </div>
+              <p class="text-gray-400 mt-2">
+                Focused on Software Engineering and Computer Architecture.
+                GPA: 3.7/4.0
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <script>
+    // Initialize 3D scene
+    function initScene() {
+      const container = document.getElementById('scene-container');
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ alpha: true });
+      
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      container.appendChild(renderer.domElement);
+      
+      // Create floating particles
+      const particles = [];
+      const particleCount = 100;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const geometry = new THREE.SphereGeometry(0.1, 8, 8);
+        const material = new THREE.MeshBasicMaterial({
+          color: 0x6366f1,
+          transparent: true,
+          opacity: 0.5
+        });
+        
+        const particle = new THREE.Mesh(geometry, material);
+        particle.position.set(
+          Math.random() * 40 - 20,
+          Math.random() * 40 - 20,
+          Math.random() * 40 - 20
+        );
+        
+        particles.push({
+          mesh: particle,
+          speed: Math.random() * 0.02 + 0.01,
+          rotation: Math.random() * Math.PI * 2
+        });
+        
+        scene.add(particle);
+      }
+      
+      camera.position.z = 30;
+      
+      function animate() {
+        requestAnimationFrame(animate);
+        
+        particles.forEach(particle => {
+          particle.mesh.position.y += particle.speed;
+          particle.mesh.rotation.y += 0.01;
+          
+          if (particle.mesh.position.y > 20) {
+            particle.mesh.position.y = -20;
+          }
+        });
+        
+        renderer.render(scene, camera);
+      }
+      
+      animate();
+      
+      // Handle window resize
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+    
+    // Initialize scene when page loads
+    document.addEventListener('DOMContentLoaded', initScene);
+    
+    // Logout function
+    function logout() {
+      localStorage.removeItem('isLoggedIn');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html> 

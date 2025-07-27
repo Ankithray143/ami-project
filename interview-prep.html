@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interview Preparation - Career Mentor</title>
+  
+  <!-- External libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <!-- Custom styles -->
+  <style>
+    /* Base styles */
+    body {
+      background-color: #0f1729;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(51, 65, 85, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 75% 75%, rgba(79, 70, 229, 0.1) 0%, transparent 40%);
+      min-height: 100vh;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    /* Glassmorphism effect */
+    .dark-glassmorphism {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+  <!-- Top Navigation -->
+  <header class="dark-glassmorphism sticky top-0 z-30 border-b border-indigo-500/20">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center py-3">
+        <!-- Logo -->
+        <a href="dashboard.html" class="flex items-center space-x-2">
+          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
+            <i class="fas fa-robot text-white"></i>
+          </div>
+          <span class="text-xl font-bold text-white">Career Mentor</span>
+        </a>
+        
+        <!-- User menu -->
+        <div class="flex items-center space-x-4">
+          <a href="dashboard.html" class="text-gray-400 hover:text-white">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Main Content -->
+  <main class="flex-1 container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+      <!-- Interview Prep Header -->
+      <div class="dark-glassmorphism rounded-xl p-6 mb-8 border border-indigo-500/20">
+        <h1 class="text-2xl font-bold text-white">Interview Preparation</h1>
+        <p class="text-gray-400 mt-2">Get ready for your next interview with AI-powered practice</p>
+      </div>
+      
+      <!-- Interview Setup -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Job Details Form -->
+        <div class="lg:col-span-2">
+          <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+            <h2 class="text-lg font-semibold text-white mb-6">Job Details</h2>
+            
+            <!-- Job Title -->
+            <div class="mb-6">
+              <h2 class="text-xl font-semibold text-white mb-4">Job Details</h2>
+              <div class="dark-glassmorphism p-5 rounded-xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label for="job-title" class="block text-sm font-medium text-gray-300 mb-2">Job Title</label>
+                    <div class="relative">
+                      <select id="job-title" class="w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-2 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/50" style="color: black;">
+                        <option value="">Select a job title</option>
+                        <option value="frontend">Frontend Developer</option>
+                        <option value="backend">Backend Developer</option>
+                        <option value="fullstack">Full Stack Developer</option>
+                        <option value="mobile">Mobile Developer</option>
+                        <option value="devops">DevOps Engineer</option>
+                        <option value="data">Data Scientist</option>
+                        <option value="ai">AI Engineer</option>
+                        <option value="ui">UI/UX Designer</option>
+                        <option value="pm">Product Manager</option>
+                        <option value="qa">QA Engineer</option>
+                        <option value="security">Security Engineer</option>
+                        <option value="cloud">Cloud Architect</option>
+                      </select>
+                      <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <i class="fas fa-chevron-down text-indigo-400"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label for="experience-level" class="block text-sm font-medium text-gray-300 mb-2">Experience Level</label>
+                    <div class="relative">
+                      <select id="experience-level" class="w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-2 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/50" style="color: black;">
+                        <option value="">Select experience level</option>
+                        <option value="entry">Entry Level (0-2 years)</option>
+                        <option value="mid">Mid Level (2-5 years)</option>
+                        <option value="senior">Senior Level (5-8 years)</option>
+                        <option value="lead">Lead / Manager (8+ years)</option>
+                        <option value="architect">Architect / Principal (10+ years)</option>
+                        <option value="executive">CTO / VP Engineering (15+ years)</option>
+                      </select>
+                      <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <i class="fas fa-chevron-down text-indigo-400"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="md:col-span-2">
+                    <label for="key-skills" class="block text-sm font-medium text-gray-300 mb-2">Key Skills</label>
+                    <div class="relative">
+                      <div id="skills-container" class="w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg p-2 min-h-[42px] flex flex-wrap gap-2">
+                        <!-- Selected skills will appear here -->
+                      </div>
+                      <input id="skills-input" class="w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-2 text-white mt-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/50" placeholder="Type a skill and press Enter (e.g. JavaScript, React, Node.js)" style="color: black;">
+                    </div>
+                    <div class="mt-3">
+                      <p class="text-sm text-gray-400 mb-2">Popular skills:</p>
+                      <div class="flex flex-wrap gap-2">
+                        <button class="skill-tag px-3 py-1 rounded-full bg-indigo-900/50 text-indigo-300 text-sm hover:bg-indigo-800/70 transition-colors border border-indigo-500/30">JavaScript</button>
+                        <button class="skill-tag px-3 py-1 rounded-full bg-indigo-900/50 text-indigo-300 text-sm hover:bg-indigo-800/70 transition-colors border border-indigo-500/30">React</button>
+                        <button class="skill-tag px-3 py-1 rounded-full bg-indigo-900/50 text-indigo-300 text-sm hover:bg-indigo-800/70 transition-colors border border-indigo-500/30">Python</button>
+                        <button class="skill-tag px-3 py-1 rounded-full bg-indigo-900/50 text-indigo-300 text-sm hover:bg-indigo-800/70 transition-colors border border-indigo-500/30">SQL</button>
+                        <button class="skill-tag px-3 py-1 rounded-full bg-indigo-900/50 text-indigo-300 text-sm hover:bg-indigo-800/70 transition-colors border border-indigo-500/30">AWS</button>
+                        <button class="skill-tag px-3 py-1 rounded-full bg-indigo-900/50 text-indigo-300 text-sm hover:bg-indigo-800/70 transition-colors border border-indigo-500/30">Docker</button>
+                        <button class="skill-tag px-3 py-1 rounded-full bg-indigo-900/50 text-indigo-300 text-sm hover:bg-indigo-800/70 transition-colors border border-indigo-500/30">TypeScript</button>
+                        <button class="skill-tag px-3 py-1 rounded-full bg-indigo-900/50 text-indigo-300 text-sm hover:bg-indigo-800/70 transition-colors border border-indigo-500/30">Git</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label for="interview-type" class="block text-sm font-medium text-gray-300 mb-2">Interview Type</label>
+                    <div class="relative">
+                      <select id="interview-type" class="w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-2 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500/50" style="color: black;">
+                        <option value="">Select interview type</option>
+                        <option value="technical">Technical Interview</option>
+                        <option value="behavioral">Behavioral Interview</option>
+                        <option value="system-design">System Design Interview</option>
+                        <option value="coding">Coding Challenge</option>
+                        <option value="hr">HR/Screening Interview</option>
+                      </select>
+                      <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <i class="fas fa-chevron-down text-indigo-400"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Start Practice Button -->
+            <button class="start-session-btn w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-3 rounded-lg font-medium transition-all duration-200">
+              Start Practice Interview
+            </button>
+          </div>
+        </div>
+        
+        <!-- Interview Tips -->
+        <div class="lg:col-span-1">
+          <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20 sticky top-24">
+            <h2 class="text-lg font-semibold text-white mb-6">Interview Tips</h2>
+            
+            <div class="space-y-4">
+              <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-lightbulb text-indigo-400"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-white">Research the Company</h3>
+                  <p class="text-sm text-gray-400 mt-1">Learn about their products, culture, and recent news.</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-code text-indigo-400"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-white">Practice Coding</h3>
+                  <p class="text-sm text-gray-400 mt-1">Review common algorithms and data structures.</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-comments text-indigo-400"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-white">Prepare Stories</h3>
+                  <p class="text-sm text-gray-400 mt-1">Have examples ready for behavioral questions.</p>
+                </div>
+              </div>
+              
+              <div class="flex items-start space-x-3">
+                <div class="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                  <i class="fas fa-question-circle text-indigo-400"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-medium text-white">Ask Questions</h3>
+                  <p class="text-sm text-gray-400 mt-1">Prepare thoughtful questions about the role.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Practice History -->
+      <div class="mt-8">
+        <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+          <h2 class="text-lg font-semibold text-white mb-6">Practice History</h2>
+          
+          <div class="space-y-4">
+            <!-- Practice Session 1 -->
+            <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
+              <div>
+                <h3 class="text-white">Senior Software Engineer Practice</h3>
+                <p class="text-gray-400 text-sm mt-1">Technical & Behavioral Interview</p>
+              </div>
+              <div class="flex items-center space-x-4">
+                <span class="text-green-400">Score: 85%</span>
+                <button class="text-indigo-400 hover:text-indigo-300">
+                  <i class="fas fa-play"></i>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Practice Session 2 -->
+            <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
+              <div>
+                <h3 class="text-white">System Design Practice</h3>
+                <p class="text-gray-400 text-sm mt-1">Architecture & Scalability</p>
+              </div>
+              <div class="flex items-center space-x-4">
+                <span class="text-green-400">Score: 92%</span>
+                <button class="text-indigo-400 hover:text-indigo-300">
+                  <i class="fas fa-play"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Initialize -->
+  <script src="init.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load saved interview settings from localStorage
+      const settings = JSON.parse(localStorage.getItem('interviewSettings') || '{}');
+      
+      // Apply saved settings to form elements
+      Object.keys(settings).forEach(key => {
+        const element = document.querySelector(`[name="${key}"]`);
+        if (element) {
+          if (element.type === 'checkbox') {
+            element.checked = settings[key];
+          } else {
+            element.value = settings[key];
+          }
+        }
+      });
+      
+      // Save settings when changed
+      document.querySelectorAll('input, select').forEach(element => {
+        element.addEventListener('change', function() {
+          const settings = JSON.parse(localStorage.getItem('interviewSettings') || '{}');
+          settings[this.name] = this.type === 'checkbox' ? this.checked : this.value;
+          localStorage.setItem('interviewSettings', JSON.stringify(settings));
+        });
+      });
+      
+      // Handle skill selection
+      document.querySelectorAll('.rounded-full.cursor-pointer').forEach(skill => {
+        skill.addEventListener('click', function() {
+          this.classList.toggle('bg-indigo-600');
+          this.classList.toggle('bg-indigo-500/20');
+        });
+      });
+
+      // Initialize skills selection
+      const skillsContainer = document.getElementById('skills-container');
+      const skillsInput = document.getElementById('skills-input');
+      const skillTags = document.querySelectorAll('.skill-tag');
+      
+      const selectedSkills = new Set();
+      
+      // Function to add a skill
+      function addSkill(skill) {
+        if (skill && !selectedSkills.has(skill)) {
+          selectedSkills.add(skill);
+          
+          // Create skill element
+          const skillElement = document.createElement('div');
+          skillElement.className = 'flex items-center bg-indigo-600/30 px-3 py-1 rounded-full text-white text-sm';
+          skillElement.innerHTML = `
+            ${skill}
+            <button class="ml-2 text-indigo-300 hover:text-white transition-colors" data-skill="${skill}">
+              <i class="fas fa-times-circle"></i>
+            </button>
+          `;
+          
+          // Add remove functionality
+          const removeButton = skillElement.querySelector('button');
+          removeButton.addEventListener('click', function() {
+            const skillToRemove = this.getAttribute('data-skill');
+            selectedSkills.delete(skillToRemove);
+            skillElement.remove();
+          });
+          
+          skillsContainer.appendChild(skillElement);
+          skillsInput.value = '';
+        }
+      }
+      
+      // Handle Enter key in input
+      skillsInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          addSkill(this.value.trim());
+        }
+      });
+      
+      // Handle popular skill tag clicks
+      skillTags.forEach(tag => {
+        tag.addEventListener('click', function() {
+          addSkill(this.textContent.trim());
+        });
+      });
+      
+      // Initialize interview session when form submitted
+      const startButton = document.querySelector('.start-session-btn');
+      if (startButton) {
+        startButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          const jobTitle = document.getElementById('job-title').value;
+          const experienceLevel = document.getElementById('experience-level').value;
+          const interviewType = document.getElementById('interview-type').value;
+          
+          if (!jobTitle || !experienceLevel || !interviewType || selectedSkills.size === 0) {
+            alert('Please fill in all fields and select at least one skill');
+            return;
+          }
+          
+          // Show loading state
+          this.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Preparing...';
+          this.disabled = true;
+          
+          // Simulate API call
+          setTimeout(() => {
+            window.location.href = 'interview-session.html';
+          }, 2000);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

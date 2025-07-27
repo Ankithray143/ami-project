@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Job Autofill - Career Mentor</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      background-color: #0f1729;
+      color: #e2e8f0;
+    }
+    .dark-glassmorphism {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .field-highlight {
+      animation: pulse 2s infinite;
+      border: 2px solid #6366f1;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5); }
+      70% { box-shadow: 0 0 0 10px rgba(99, 102, 241, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+    }
+    /* Autofill highlight animation */
+    .autofill-highlight {
+      animation: autofillPulse 2s ease-in-out;
+    }
+    
+    @keyframes autofillPulse {
+      0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+      70% { box-shadow: 0 0 0 6px rgba(99, 102, 241, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+    }
+    
+    /* Enhanced form styles for better visibility */
+    .form-field {
+      background-color: rgba(31, 41, 55, 0.7) !important;
+      color: white !important;
+      border: 1px solid rgba(99, 102, 241, 0.3) !important;
+      transition: all 0.3s ease;
+    }
+    
+    .form-field:focus {
+      border-color: rgba(99, 102, 241, 0.8) !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+      background-color: rgba(31, 41, 55, 0.9) !important;
+    }
+    
+    .form-field::placeholder {
+      color: rgba(156, 163, 175, 0.7) !important;
+    }
+    
+    /* Enhanced field status indicators */
+    .field-status {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 4px;
+      border-top-right-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .field-status.autofilled {
+      background: linear-gradient(to bottom, #6366f1, #a855f7);
+    }
+    
+    .field-status.manual {
+      background: linear-gradient(to bottom, #64748b, #94a3b8);
+    }
+    
+    /* Improved field icon */
+    .field-icon {
+      background: rgba(79, 70, 229, 0.2);
+      border-radius: 50%;
+      padding: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .field-container:hover .field-icon {
+      transform: scale(1.1);
+      background: rgba(79, 70, 229, 0.3);
+    }
+    
+    /* Highlight hover effects */
+    .field-container {
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .field-container:hover {
+      transform: translateY(-2px);
+    }
+    
+    .field-container:hover .form-field {
+      border-color: rgba(99, 102, 241, 0.5) !important;
+    }
+  </style>
+</head>
+<body class="text-gray-200">
+  <!-- Navigation -->
+  <nav class="dark-glassmorphism sticky top-0 z-50 backdrop-blur-md py-4 px-6 border-b border-indigo-500/20">
+    <div class="container mx-auto flex items-center justify-between">
+      <!-- Logo -->
+      <div class="flex items-center space-x-2">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center">
+          <i class="fas fa-robot text-white text-xl"></i>
+        </div>
+        <span class="font-bold text-xl text-white">Career Mentor</span>
+      </div>
+      
+      <!-- Navigation Links -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="dashboard.html" class="hover:text-indigo-400 transition-colors">Dashboard</a>
+        <a href="resume-analyzer.html" class="hover:text-indigo-400 transition-colors">Resume Analysis</a>
+        <a href="job-search.html" class="hover:text-indigo-400 transition-colors">Job Search</a>
+        <a href="interview-prep.html" class="hover:text-indigo-400 transition-colors">Interview Prep</a>
+        <a href="learning-paths.html" class="hover:text-indigo-400 transition-colors">Learning Paths</a>
+        <a href="market-insights.html" class="hover:text-indigo-400 transition-colors">Market Insights</a>
+        <a href="job-autofill.html" class="text-indigo-400 font-medium">Job Autofill</a>
+      </div>
+      
+      <!-- User Profile -->
+      <div class="flex items-center space-x-4">
+        <button class="p-2 text-indigo-300 hover:text-indigo-100 transition-colors">
+          <i class="fas fa-bell"></i>
+        </button>
+        <div class="cursor-pointer flex items-center bg-indigo-900/40 rounded-lg px-3 py-2">
+          <span id="username-display" class="mr-2 text-sm">User</span>
+          <span class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
+            <i class="fas fa-user text-white"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container mx-auto py-8 px-4">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-white mb-2">Smart Job Autofill</h1>
+      <p class="text-indigo-300">Automatically fill job applications with your information and save hours of time</p>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Left Column: Profile Information -->
+      <div class="lg:col-span-1">
+        <div class="dark-glassmorphism rounded-xl p-6 mb-6">
+          <h2 class="text-xl font-semibold text-white mb-4 flex items-center">
+            <i class="fas fa-user-circle text-indigo-400 mr-2"></i>
+            Your Profile Information
+          </h2>
+          
+          <div class="space-y-4">
+            <div id="profile-data">
+              <div class="mb-4">
+                <h3 class="text-indigo-300 text-sm mb-1">Personal Information</h3>
+                <div class="bg-indigo-900/30 rounded-lg p-3 space-y-2">
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Name:</span>
+                    <span class="text-white" id="profile-name">John Doe</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Email:</span>
+                    <span class="text-white" id="profile-email">john.doe@example.com</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Phone:</span>
+                    <span class="text-white" id="profile-phone">(555) 123-4567</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Location:</span>
+                    <span class="text-white" id="profile-location">San Francisco, CA</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <h3 class="text-indigo-300 text-sm mb-1">Work Experience</h3>
+                <div class="bg-indigo-900/30 rounded-lg p-3 space-y-2">
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Current Position:</span>
+                    <span class="text-white" id="profile-position">Senior Software Engineer</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Company:</span>
+                    <span class="text-white" id="profile-company">Tech Innovations Inc.</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Years of Experience:</span>
+                    <span class="text-white" id="profile-experience">5</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <h3 class="text-indigo-300 text-sm mb-1">Education</h3>
+                <div class="bg-indigo-900/30 rounded-lg p-3 space-y-2">
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Degree:</span>
+                    <span class="text-white" id="profile-degree">Master of Science in Computer Science</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">University:</span>
+                    <span class="text-white" id="profile-university">University of Technology</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-400">Graduation Year:</span>
+                    <span class="text-white" id="profile-grad-year">2018</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h3 class="text-indigo-300 text-sm mb-1">Skills</h3>
+                <div class="bg-indigo-900/30 rounded-lg p-3">
+                  <div class="flex flex-wrap gap-2" id="profile-skills">
+                    <span class="bg-indigo-700/50 text-indigo-300 text-xs px-2 py-1 rounded">JavaScript</span>
+                    <span class="bg-indigo-700/50 text-indigo-300 text-xs px-2 py-1 rounded">React</span>
+                    <span class="bg-indigo-700/50 text-indigo-300 text-xs px-2 py-1 rounded">Node.js</span>
+                    <span class="bg-indigo-700/50 text-indigo-300 text-xs px-2 py-1 rounded">AWS</span>
+                    <span class="bg-indigo-700/50 text-indigo-300 text-xs px-2 py-1 rounded">GraphQL</span>
+                    <span class="bg-indigo-700/50 text-indigo-300 text-xs px-2 py-1 rounded">Docker</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex justify-end">
+              <button class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded text-sm" id="edit-profile-btn">
+                <i class="fas fa-pencil-alt mr-1"></i> Edit Profile
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dark-glassmorphism rounded-xl p-6">
+          <h2 class="text-xl font-semibold text-white mb-4 flex items-center">
+            <i class="fas fa-chart-bar text-indigo-400 mr-2"></i>
+            Autofill Statistics
+          </h2>
+          
+          <div class="space-y-4">
+            <div class="bg-indigo-900/30 rounded-lg p-4">
+              <h3 class="text-lg font-medium text-white mb-2">Time Saved</h3>
+              <div class="flex items-end space-x-2">
+                <span class="text-3xl font-bold text-indigo-400">42</span>
+                <span class="text-gray-400 pb-1">hours</span>
+              </div>
+              <p class="text-xs text-gray-400 mt-1">Based on avg. of 15 min saved per application</p>
+            </div>
+            
+            <div class="bg-indigo-900/30 rounded-lg p-4">
+              <h3 class="text-lg font-medium text-white mb-2">Applications Autofilled</h3>
+              <div class="flex items-end space-x-2">
+                <span class="text-3xl font-bold text-indigo-400">168</span>
+                <span class="text-gray-400 pb-1">forms</span>
+              </div>
+              <p class="text-xs text-gray-400 mt-1">Across 32 different job platforms</p>
+            </div>
+            
+            <div class="bg-indigo-900/30 rounded-lg p-4">
+              <h3 class="text-lg font-medium text-white mb-2">Autofill Accuracy</h3>
+              <div class="w-full bg-gray-700 rounded-full h-2.5 mb-2">
+                <div class="bg-indigo-600 h-2.5 rounded-full" style="width: 94%"></div>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="text-gray-400">94% accurate</span>
+                <span class="text-indigo-400">158/168 perfect fills</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Column: Application Form & Demo -->
+      <div class="lg:col-span-2">
+        <div class="dark-glassmorphism rounded-xl p-6 mb-6">
+          <h2 class="text-xl font-semibold text-white mb-4 flex items-center">
+            <i class="fas fa-magic text-indigo-400 mr-2"></i>
+            Try Smart Autofill (Demo)
+          </h2>
+          
+          <div class="mb-4">
+            <div class="flex items-center p-4 bg-indigo-900/40 rounded-lg">
+              <i class="fas fa-info-circle text-indigo-400 mr-3 text-xl"></i>
+              <p class="text-gray-300 text-sm">This is a demonstration of how the Smart Autofill feature works. Click the "Autofill Form" button to automatically populate the sample job application form with your profile information.</p>
+            </div>
+          </div>
+          
+          <div class="mb-10">
+            <h2 class="text-xl font-semibold text-white mb-6">Autofill Demo</h2>
+            <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+              <div class="mb-6">
+                <h3 class="text-lg font-medium text-white mb-4">Job Application Form</h3>
+                <div class="px-4 py-3 rounded-lg bg-indigo-600/20 text-white mb-5 flex items-center">
+                  <i class="fas fa-info-circle mr-2 text-indigo-300"></i>
+                  <p class="text-sm">This is a demonstration of how our AI automatically fills in job applications for you. Fields marked with <span class="text-indigo-300">●</span> will be autofilled.</p>
+                </div>
+                
+                <form class="space-y-5">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Personal Information -->
+                    <div class="field-container">
+                      <label class="block text-sm font-medium text-gray-300 mb-2">
+                        Full Name <span class="text-indigo-300">●</span>
+                      </label>
+                      <div class="relative">
+                        <input type="text" class="form-field w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-2 pl-10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50" value="Alex Johnson" readonly>
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                          <div class="field-icon">
+                            <i class="fas fa-user text-indigo-400"></i>
+                          </div>
+                        </div>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                          <i class="fas fa-check-circle text-green-400"></i>
+                        </div>
+                        <div class="field-status autofilled"></div>
+                      </div>
+                      <p class="text-xs text-indigo-300 mt-1">Autofilled from your profile</p>
+                    </div>
+                    
+                    <div class="field-container">
+                      <label class="block text-sm font-medium text-gray-300 mb-2">
+                        Email Address <span class="text-indigo-300">●</span>
+                      </label>
+                      <div class="relative">
+                        <input type="email" class="form-field w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-2 pl-10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50" value="alex.johnson@example.com" readonly>
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                          <div class="field-icon">
+                            <i class="fas fa-envelope text-indigo-400"></i>
+                          </div>
+                        </div>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                          <i class="fas fa-check-circle text-green-400"></i>
+                        </div>
+                        <div class="field-status autofilled"></div>
+                      </div>
+                      <p class="text-xs text-indigo-300 mt-1">Autofilled from your profile</p>
+                    </div>
+                    
+                    <div class="field-container">
+                      <label class="block text-sm font-medium text-gray-300 mb-2">
+                        Phone Number <span class="text-indigo-300">●</span>
+                      </label>
+                      <div class="relative">
+                        <input type="tel" class="form-field w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-2 pl-10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50" value="(555) 123-4567" readonly>
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                          <div class="field-icon">
+                            <i class="fas fa-phone text-indigo-400"></i>
+                          </div>
+                        </div>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                          <i class="fas fa-check-circle text-green-400"></i>
+                        </div>
+                        <div class="field-status autofilled"></div>
+                      </div>
+                      <p class="text-xs text-indigo-300 mt-1">Autofilled from your profile</p>
+                    </div>
+                    
+                    <div class="field-container">
+                      <label class="block text-sm font-medium text-gray-300 mb-2">
+                        Location <span class="text-indigo-300">●</span>
+                      </label>
+                      <div class="relative">
+                        <input type="text" class="form-field w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-2 pl-10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50" value="San Francisco, CA" readonly>
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                          <div class="field-icon">
+                            <i class="fas fa-map-marker-alt text-indigo-400"></i>
+                          </div>
+                        </div>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                          <i class="fas fa-check-circle text-green-400"></i>
+                        </div>
+                        <div class="field-status autofilled"></div>
+                      </div>
+                      <p class="text-xs text-indigo-300 mt-1">Autofilled from your profile</p>
+                    </div>
+                    
+                    <!-- Professional Information -->
+                    <div class="field-container md:col-span-2">
+                      <label class="block text-sm font-medium text-gray-300 mb-2">
+                        Current Job Title <span class="text-indigo-300">●</span>
+                      </label>
+                      <div class="relative">
+                        <input type="text" class="form-field w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-2 pl-10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50" value="Senior Frontend Developer" readonly>
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                          <div class="field-icon">
+                            <i class="fas fa-briefcase text-indigo-400"></i>
+                          </div>
+                        </div>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                          <i class="fas fa-check-circle text-green-400"></i>
+                        </div>
+                        <div class="field-status autofilled"></div>
+                      </div>
+                      <p class="text-xs text-indigo-300 mt-1">Autofilled from your resume</p>
+                    </div>
+                    
+                    <div class="field-container md:col-span-2">
+                      <label class="block text-sm font-medium text-gray-300 mb-2">
+                        Years of Experience <span class="text-indigo-300">●</span>
+                      </label>
+                      <div class="relative">
+                        <input type="text" class="form-field w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-2 pl-10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50" value="6 years" readonly>
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                          <div class="field-icon">
+                            <i class="fas fa-clock text-indigo-400"></i>
+                          </div>
+                        </div>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                          <i class="fas fa-check-circle text-green-400"></i>
+                        </div>
+                        <div class="field-status autofilled"></div>
+                      </div>
+                      <p class="text-xs text-indigo-300 mt-1">Autofilled from your resume</p>
+                    </div>
+                    
+                    <div class="field-container md:col-span-2">
+                      <label class="block text-sm font-medium text-gray-300 mb-2">
+                        Skills <span class="text-indigo-300">●</span>
+                      </label>
+                      <div class="relative">
+                        <div class="form-field w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-3 pl-10 text-white min-h-[42px] flex flex-wrap gap-2">
+                          <span class="px-2 py-1 rounded-full bg-indigo-600/30 text-indigo-300 text-xs">JavaScript</span>
+                          <span class="px-2 py-1 rounded-full bg-indigo-600/30 text-indigo-300 text-xs">React</span>
+                          <span class="px-2 py-1 rounded-full bg-indigo-600/30 text-indigo-300 text-xs">TypeScript</span>
+                          <span class="px-2 py-1 rounded-full bg-indigo-600/30 text-indigo-300 text-xs">Vue.js</span>
+                          <span class="px-2 py-1 rounded-full bg-indigo-600/30 text-indigo-300 text-xs">CSS/SCSS</span>
+                          <span class="px-2 py-1 rounded-full bg-indigo-600/30 text-indigo-300 text-xs">HTML5</span>
+                          <span class="px-2 py-1 rounded-full bg-indigo-600/30 text-indigo-300 text-xs">Webpack</span>
+                        </div>
+                        <div class="absolute top-3 left-0 flex items-center pl-3">
+                          <div class="field-icon">
+                            <i class="fas fa-code text-indigo-400"></i>
+                          </div>
+                        </div>
+                        <div class="absolute top-3 right-0 flex items-center pr-3 pointer-events-none">
+                          <i class="fas fa-check-circle text-green-400"></i>
+                        </div>
+                        <div class="field-status autofilled"></div>
+                      </div>
+                      <p class="text-xs text-indigo-300 mt-1">Autofilled from your resume</p>
+                    </div>
+                    
+                    <div class="field-container md:col-span-2">
+                      <label class="block text-sm font-medium text-gray-300 mb-2">
+                        Education <span class="text-indigo-300">●</span>
+                      </label>
+                      <div class="relative">
+                        <input type="text" class="form-field w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-2 pl-10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50" value="Bachelor of Science in Computer Science, Stanford University" readonly>
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3">
+                          <div class="field-icon">
+                            <i class="fas fa-graduation-cap text-indigo-400"></i>
+                          </div>
+                        </div>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                          <i class="fas fa-check-circle text-green-400"></i>
+                        </div>
+                        <div class="field-status autofilled"></div>
+                      </div>
+                      <p class="text-xs text-indigo-300 mt-1">Autofilled from your resume</p>
+                    </div>
+                    
+                    <div class="field-container md:col-span-2">
+                      <label class="block text-sm font-medium text-gray-300 mb-2">
+                        Why are you interested in this position?
+                      </label>
+                      <div class="relative">
+                        <textarea class="form-field w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg px-4 py-2 pl-10 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 h-24 resize-none"></textarea>
+                        <div class="absolute top-2 left-0 flex items-center pl-3">
+                          <div class="field-icon">
+                            <i class="fas fa-pencil-alt text-indigo-400"></i>
+                          </div>
+                        </div>
+                        <div class="field-status manual"></div>
+                      </div>
+                      <p class="text-xs text-gray-500 mt-1">This field requires manual input</p>
+                    </div>
+                  </div>
+                  
+                  <div class="mt-6 flex justify-between items-center">
+                    <div class="px-4 py-2 rounded-lg bg-gray-800/70 text-white flex items-center text-sm">
+                      <i class="fas fa-magic text-indigo-400 mr-2"></i>
+                      <span>10 fields autofilled · Time saved: <span class="text-indigo-300">~3 minutes</span></span>
+                    </div>
+                    <button type="button" class="px-6 py-2.5 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-200">
+                      Submit Application
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dark-glassmorphism rounded-xl p-6">
+          <h2 class="text-xl font-semibold text-white mb-4 flex items-center">
+            <i class="fas fa-rocket text-indigo-400 mr-2"></i>
+            How It Works
+          </h2>
+          
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-indigo-900/30 rounded-lg p-4">
+              <div class="w-12 h-12 rounded-full bg-indigo-600/30 flex items-center justify-center mb-3">
+                <i class="fas fa-file-alt text-indigo-400 text-xl"></i>
+              </div>
+              <h3 class="font-medium text-white mb-2">1. Form Detection</h3>
+              <p class="text-gray-300 text-sm">Our AI automatically detects job application forms on various websites and analyzes field patterns.</p>
+            </div>
+            <div class="bg-indigo-900/30 rounded-lg p-4">
+              <div class="w-12 h-12 rounded-full bg-indigo-600/30 flex items-center justify-center mb-3">
+                <i class="fas fa-user-cog text-indigo-400 text-xl"></i>
+              </div>
+              <h3 class="font-medium text-white mb-2">2. Profile Mapping</h3>
+              <p class="text-gray-300 text-sm">Your profile information is intelligently mapped to the corresponding form fields with high accuracy.</p>
+            </div>
+            <div class="bg-indigo-900/30 rounded-lg p-4">
+              <div class="w-12 h-12 rounded-full bg-indigo-600/30 flex items-center justify-center mb-3">
+                <i class="fas fa-magic text-indigo-400 text-xl"></i>
+              </div>
+              <h3 class="font-medium text-white mb-2">3. One-Click Autofill</h3>
+              <p class="text-gray-300 text-sm">With a single click, forms are filled automatically with your information, saving you valuable time.</p>
+            </div>
+          </div>
+          
+          <div class="mt-6 p-4 bg-gradient-to-r from-indigo-900/50 to-purple-900/50 rounded-lg">
+            <div class="flex items-start">
+              <div class="w-12 h-12 rounded-full bg-indigo-600/30 flex items-center justify-center mt-1 mr-3 flex-shrink-0">
+                <i class="fas fa-bolt text-indigo-300 text-xl"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-white mb-1">Get the Chrome Extension</h3>
+                <p class="text-gray-300 text-sm mb-3">Install our Chrome extension to use Smart Autofill on any job site, including LinkedIn, Indeed, Glassdoor, and more!</p>
+                <button class="bg-white text-indigo-900 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100">
+                  <i class="fab fa-chrome mr-2"></i> Add to Chrome
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-6 px-6 border-t border-indigo-500/20">
+    <div class="container mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <span class="font-bold text-white">Career Mentor</span>
+        </div>
+        <div class="text-gray-400 text-sm">
+          &copy; 2023 Career Mentor. All rights reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="init.js"></script>
+  <script src="job-autofill.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check for user session
+      window.addEventListener('careerMentorLoaded', function() {
+        if (window.careerMentorApp && window.careerMentorApp.userProfile) {
+          const userData = window.careerMentorApp.userProfile.getUserData();
+          const usernameDisplay = document.getElementById('username-display');
+          
+          if (userData.isLoggedIn && usernameDisplay) {
+            usernameDisplay.textContent = userData.name;
+          }
+        }
+      });
+      
+      // Initialize Smart Job Autofill
+      let autofill;
+      
+      // Load the Smart Job Autofill functionality
+      if (typeof SmartJobAutofill !== 'undefined') {
+        autofill = new SmartJobAutofill();
+        
+        // Update UI with profile data
+        updateProfileUI(autofill.userData);
+      } else {
+        console.error('SmartJobAutofill class not found');
+      }
+      
+      // Handle autofill button click
+      const autofillBtn = document.getElementById('autofill-btn');
+      if (autofillBtn) {
+        autofillBtn.addEventListener('click', function() {
+          if (!autofill) return;
+          
+          // Show loading animation
+          autofillBtn.innerHTML = `
+            <div class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+            Filling...
+          `;
+          
+          // Simulate loading delay
+          setTimeout(() => {
+            // Perform autofill
+            const result = autofill.simulateAutofill('#demo-form');
+            
+            // Reset button
+            autofillBtn.innerHTML = `<i class="fas fa-magic mr-2"></i> Autofill Form`;
+            
+            // Highlight fields that were filled
+            highlightFilledFields();
+            
+            // Show success notification
+            if (window.careerMentorApp && window.careerMentorApp.notificationManager) {
+              window.careerMentorApp.notificationManager.notify(
+                `Form autofilled successfully with ${result.fieldsAutofilled} fields!`, 
+                'success'
+              );
+            } else {
+              alert(`Form autofilled successfully with ${result.fieldsAutofilled} fields!`);
+            }
+          }, 1500);
+        });
+      }
+      
+      // Handle reset form button click
+      const resetFormBtn = document.getElementById('reset-form');
+      if (resetFormBtn) {
+        resetFormBtn.addEventListener('click', function() {
+          document.getElementById('demo-form').reset();
+          
+          // Remove all highlights
+          const highlightedFields = document.querySelectorAll('.field-highlight');
+          highlightedFields.forEach(field => {
+            field.classList.remove('field-highlight');
+          });
+          
+          // Show notification
+          if (window.careerMentorApp && window.careerMentorApp.notificationManager) {
+            window.careerMentorApp.notificationManager.notify(
+              'Form has been reset', 
+              'info'
+            );
+          }
+        });
+      }
+      
+      // Handle edit profile button click
+      const editProfileBtn = document.getElementById('edit-profile-btn');
+      if (editProfileBtn) {
+        editProfileBtn.addEventListener('click', function() {
+          // Show notification
+          if (window.careerMentorApp && window.careerMentorApp.notificationManager) {
+            window.careerMentorApp.notificationManager.notify(
+              'Profile editing is not available in this demo', 
+              'info'
+            );
+          } else {
+            alert('Profile editing is not available in this demo');
+          }
+        });
+      }
+      
+      // Function to update profile UI
+      function updateProfileUI(userData) {
+        if (!userData || !userData.profile) return;
+        
+        const profile = userData.profile;
+        const resume = userData.resume;
+        
+        // Update profile section
+        document.getElementById('profile-name').textContent = `${profile.firstName} ${profile.lastName}`;
+        document.getElementById('profile-email').textContent = profile.email;
+        document.getElementById('profile-phone').textContent = profile.phone;
+        document.getElementById('profile-location').textContent = `${profile.city}, ${profile.state}`;
+        
+        // Update work section
+        document.getElementById('profile-position').textContent = resume.currentPosition;
+        document.getElementById('profile-company').textContent = resume.currentCompany;
+        document.getElementById('profile-experience').textContent = resume.yearsOfExperience;
+        
+        // Update education section
+        document.getElementById('profile-degree').textContent = resume.highestDegree;
+        document.getElementById('profile-university').textContent = resume.university;
+        document.getElementById('profile-grad-year').textContent = resume.graduationYear;
+        
+        // Update skills section
+        if (resume.skills && Array.isArray(resume.skills)) {
+          const skillsContainer = document.getElementById('profile-skills');
+          skillsContainer.innerHTML = '';
+          
+          resume.skills.forEach(skill => {
+            const skillSpan = document.createElement('span');
+            skillSpan.className = 'bg-indigo-700/50 text-indigo-300 text-xs px-2 py-1 rounded';
+            skillSpan.textContent = skill;
+            skillsContainer.appendChild(skillSpan);
+          });
+        }
+      }
+      
+      // Function to highlight filled fields
+      function highlightFilledFields() {
+        const form = document.getElementById('demo-form');
+        const inputs = form.querySelectorAll('input, textarea');
+        
+        inputs.forEach(input => {
+          if (input.value.trim() !== '') {
+            input.classList.add('field-highlight');
+          }
+        });
+      }
+      
+      // Add a subtle highlighting animation for autofilled fields
+      const autofillFields = document.querySelectorAll('.form-field[readonly], .field-status.autofilled');
+      
+      autofillFields.forEach(field => {
+        // Add a subtle pulse animation
+        field.classList.add('autofill-highlight');
+        
+        // Add a tooltip to show this was autofilled
+        field.setAttribute('title', 'Autofilled from your profile data');
+      });
+      
+      // Set width for custom fields
+      const formFields = document.querySelectorAll('.form-field');
+      formFields.forEach(field => {
+        field.style.color = "white";
+        field.style.fontWeight = "400";
+      });
+      
+      // Ensure all text in input fields is visible
+      const formInputs = document.querySelectorAll('input.form-field, textarea.form-field');
+      if (formInputs) {
+        formInputs.forEach(input => {
+          if (input.hasAttribute('readonly')) {
+            // For demo purposes, make sure readonly fields have a value
+            if (!input.value && input.getAttribute('data-default-value')) {
+              input.value = input.getAttribute('data-default-value');
+            }
+          }
+          
+          // Ensure the input has visible text
+          input.style.caretColor = '#6366f1';
+          
+          // Add event listeners for focus and blur to enhance visibility
+          input.addEventListener('focus', function() {
+            this.style.backgroundColor = 'rgba(31, 41, 55, 0.9)';
+          });
+          
+          input.addEventListener('blur', function() {
+            this.style.backgroundColor = 'rgba(31, 41, 55, 0.7)';
+          });
+        });
+      }
+      
+      // Simulate autofill process
+      const autofillButton = document.querySelector('.autofill-toggle');
+      if (autofillButton) {
+        autofillButton.addEventListener('click', function() {
+          const isActive = this.classList.contains('bg-indigo-600');
+          
+          if (isActive) {
+            // Disable autofill
+            this.classList.remove('bg-indigo-600');
+            this.classList.add('bg-gray-700');
+            
+            // Simulate clearing fields
+            autofillFields.forEach(field => {
+              field.value = '';
+              field.classList.remove('autofill-highlight');
+              const checkIcon = field.parentElement.querySelector('.fa-check-circle');
+              if (checkIcon) {
+                checkIcon.classList.add('hidden');
+              }
+            });
+          } else {
+            // Enable autofill
+            this.classList.add('bg-indigo-600');
+            this.classList.remove('bg-gray-700');
+            
+            // Simulate filling fields
+            setTimeout(() => {
+              autofillFields.forEach((field, index) => {
+                // Stagger the filling effect
+                setTimeout(() => {
+                  // If it's a skill container, handle differently
+                  if (field.classList.contains('flex-wrap')) {
+                    field.classList.add('autofill-highlight');
+                  } else {
+                    field.value = field.getAttribute('data-value') || 'Sample Data';
+                    field.classList.add('autofill-highlight');
+                  }
+                  
+                  const checkIcon = field.parentElement.querySelector('.fa-check-circle');
+                  if (checkIcon) {
+                    checkIcon.classList.remove('hidden');
+                  }
+                }, index * 150);
+              });
+            }, 500);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html> 

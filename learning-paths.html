@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Paths - Career Mentor</title>
+  
+  <!-- External libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <!-- Custom styles -->
+  <style>
+    /* Base styles */
+    body {
+      background-color: #0f1729;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(51, 65, 85, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 75% 75%, rgba(79, 70, 229, 0.1) 0%, transparent 40%);
+      min-height: 100vh;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    /* Glassmorphism effect */
+    .dark-glassmorphism {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Card hover effect */
+    .feature-card {
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3);
+    }
+    
+    /* Glow effect */
+    .glow {
+      box-shadow: 0 0 15px rgba(79, 70, 229, 0.3);
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      transition: all 0.3s ease;
+    }
+    
+    /* Content */
+    .main-content {
+      width: calc(100% - 280px);
+      transition: all 0.3s ease;
+    }
+    
+    /* Mobile sidebar */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 0;
+        position: fixed;
+        z-index: 40;
+      }
+      
+      .sidebar.open {
+        width: 280px;
+      }
+      
+      .main-content {
+        width: 100%;
+      }
+    }
+    
+    /* Progress bars */
+    .progress-bar {
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(to right, #6366f1, #8b5cf6);
+      border-radius: 4px;
+    }
+    
+    /* Learning path card */
+    .learning-path-card {
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    
+    .learning-path-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3);
+    }
+    
+    .learning-path-card .badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 10;
+    }
+    
+    /* Skill tag */
+    .skill-tag {
+      transition: all 0.2s ease;
+    }
+    
+    .skill-tag:hover {
+      background-color: rgba(99, 102, 241, 0.7);
+      color: white;
+    }
+    
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(17, 24, 39, 0.7);
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: rgba(99, 102, 241, 0.5);
+      border-radius: 3px;
+    }
+    
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(99, 102, 241, 0.7);
+    }
+  </style>
+</head>
+<body class="flex flex-col min-h-screen">
+  <!-- Top Navigation -->
+  <header class="dark-glassmorphism sticky top-0 z-30 border-b border-indigo-500/20">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center py-3">
+        <!-- Logo and mobile menu button -->
+        <div class="flex items-center space-x-4">
+          <button id="sidebar-toggle" class="lg:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800">
+            <i class="fas fa-bars"></i>
+          </button>
+          
+          <a href="dashboard.html" class="flex items-center space-x-2">
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg">
+              <i class="fas fa-robot text-white"></i>
+            </div>
+            <span class="text-xl font-bold text-white hidden md:inline-block">Career Mentor</span>
+          </a>
+        </div>
+        
+        <!-- Search and Navigation -->
+        <div class="hidden md:flex flex-1 max-w-xl mx-4">
+          <div class="relative w-full">
+            <input type="text" placeholder="Search for courses, skills, or learning paths..." class="w-full bg-gray-800/50 border border-indigo-500/30 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50">
+            <i class="fas fa-search absolute left-3 top-2.5 text-gray-400"></i>
+          </div>
+        </div>
+        
+        <!-- User menu -->
+        <div class="flex items-center space-x-4">
+          <button class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 relative">
+            <i class="fas fa-bell"></i>
+            <span class="absolute top-1 right-1 w-2 h-2 bg-indigo-500 rounded-full"></span>
+          </button>
+          
+          <div class="relative">
+            <button id="user-menu-button" class="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-800">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow-sm">
+                <span class="text-white text-sm font-medium" id="user-initials">U</span>
+              </div>
+              <span class="text-sm text-white hidden sm:inline-block" id="user-name">User</span>
+              <i class="fas fa-chevron-down text-xs text-gray-400"></i>
+            </button>
+            
+            <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 dark-glassmorphism rounded-lg shadow-xl z-50 border border-indigo-500/20">
+              <div class="py-2 px-4 border-b border-indigo-500/20">
+                <p class="text-sm text-white font-medium" id="user-menu-name">User</p>
+                <p class="text-xs text-gray-400" id="user-menu-email">user@example.com</p>
+              </div>
+              <div class="py-1">
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">
+                  <i class="fas fa-user-circle mr-2 text-indigo-400"></i> Profile
+                </a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">
+                  <i class="fas fa-cog mr-2 text-indigo-400"></i> Settings
+                </a>
+                <button id="logout-button" class="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800">
+                  <i class="fas fa-sign-out-alt mr-2 text-indigo-400"></i> Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="sidebar h-screen overflow-y-auto bg-gray-900 border-r border-indigo-500/20 hidden lg:block">
+      <nav class="p-4">
+        <div class="space-y-1">
+          <a href="dashboard.html" class="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+            <i class="fas fa-home text-indigo-400 w-5"></i>
+            <span class="ml-3">Dashboard</span>
+          </a>
+          
+          <a href="resume-analyzer.html" class="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+            <i class="fas fa-file-alt text-indigo-400 w-5"></i>
+            <span class="ml-3">Resume Analyzer</span>
+          </a>
+          
+          <a href="job-search.html" class="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+            <i class="fas fa-search text-indigo-400 w-5"></i>
+            <span class="ml-3">Job Search</span>
+          </a>
+          
+          <a href="job-autofill.html" class="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+            <i class="fas fa-file-import text-indigo-400 w-5"></i>
+            <span class="ml-3">Smart Job Autofill</span>
+          </a>
+          
+          <a href="market-insights.html" class="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+            <i class="fas fa-chart-line text-indigo-400 w-5"></i>
+            <span class="ml-3">Market Insights</span>
+          </a>
+          
+          <a href="interview-prep.html" class="flex items-center px-4 py-3 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+            <i class="fas fa-microphone text-indigo-400 w-5"></i>
+            <span class="ml-3">Interview Prep</span>
+          </a>
+          
+          <a href="learning-paths.html" class="flex items-center px-4 py-3 text-white rounded-lg bg-indigo-500/20">
+            <i class="fas fa-graduation-cap text-indigo-400 w-5"></i>
+            <span class="ml-3">Learning Paths</span>
+          </a>
+        </div>
+        
+        <div class="mt-8">
+          <h3 class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Learning Resources</h3>
+          <div class="mt-2 space-y-1">
+            <a href="#" class="flex items-center px-4 py-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+              <i class="fas fa-book-open text-indigo-400 w-5"></i>
+              <span class="ml-3">My Courses</span>
+            </a>
+            
+            <a href="#" class="flex items-center px-4 py-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+              <i class="fas fa-certificate text-indigo-400 w-5"></i>
+              <span class="ml-3">Certifications</span>
+            </a>
+            
+            <a href="#" class="flex items-center px-4 py-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+              <i class="fas fa-bookmark text-indigo-400 w-5"></i>
+              <span class="ml-3">Saved Courses</span>
+            </a>
+            
+            <a href="#" class="flex items-center px-4 py-2 text-gray-300 hover:text-white rounded-lg hover:bg-gray-800">
+              <i class="fas fa-history text-indigo-400 w-5"></i>
+              <span class="ml-3">Learning History</span>
+            </a>
+          </div>
+        </div>
+        
+        <div class="mt-8">
+          <div class="px-4 py-3 dark-glassmorphism rounded-lg">
+            <div class="flex items-center justify-between mb-2">
+              <h3 class="text-sm font-medium text-white">Learning Progress</h3>
+              <span class="text-xs bg-indigo-500 text-white px-2 py-0.5 rounded-full">3/7</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 42%;"></div>
+            </div>
+            <p class="mt-2 text-xs text-gray-400">Full-Stack Development Track</p>
+            <button class="mt-2 text-xs text-indigo-400 hover:text-indigo-300">Resume Learning</button>
+          </div>
+        </div>
+      </nav>
+    </aside>
+    
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content flex-1 overflow-y-auto px-4 py-8 md:px-8">
+      <!-- Page Header -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
+        <div>
+          <h1 class="text-3xl font-bold text-white">Learning Paths</h1>
+          <p class="text-gray-400 mt-1">Personalized learning recommendations to advance your career.</p>
+        </div>
+        
+        <div class="mt-4 md:mt-0 flex space-x-2">
+          <button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center transition-colors">
+            <i class="fas fa-compass mr-2"></i>
+            <span>Explore Paths</span>
+          </button>
+          
+          <div class="relative">
+            <button id="filter-button" class="px-4 py-2 bg-gray-800 text-gray-300 hover:text-white rounded-lg flex items-center transition-colors">
+              <i class="fas fa-filter mr-2"></i>
+              <span>Filters</span>
+              <i class="fas fa-chevron-down ml-2 text-xs"></i>
+            </button>
+            
+            <div id="filter-menu" class="hidden absolute right-0 mt-2 w-64 dark-glassmorphism rounded-lg shadow-xl z-10 border border-indigo-500/20 p-4">
+              <h4 class="text-white text-sm font-medium mb-2">Learning Format</h4>
+              <div class="space-y-2 mb-4">
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Self-paced courses
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Guided programs
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Certifications
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Bootcamps
+                </label>
+              </div>
+              
+              <h4 class="text-white text-sm font-medium mb-2">Duration</h4>
+              <div class="space-y-2 mb-4">
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Under 10 hours
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  10-20 hours
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  20-40 hours
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  40+ hours
+                </label>
+              </div>
+              
+              <h4 class="text-white text-sm font-medium mb-2">Experience Level</h4>
+              <div class="space-y-2 mb-4">
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Beginner
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Intermediate
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Advanced
+                </label>
+              </div>
+              
+              <div class="flex justify-between">
+                <button class="text-sm text-gray-400 hover:text-gray-300">Reset</button>
+                <button class="text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded">Apply</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Learning Paths Section -->
+      <div class="dark-glassmorphism rounded-xl p-6 mb-8">
+        <h2 class="text-2xl font-bold text-white mb-4">Recommended Learning Paths</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <!-- Path 1: Web Development -->
+          <div class="path-card dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+            <div class="mb-4">
+              <span class="bg-indigo-900/50 text-indigo-300 text-xs px-2 py-1 rounded">Software Development</span>
+              <span class="bg-green-900/50 text-green-400 text-xs px-2 py-1 rounded ml-2">Beginner-Friendly</span>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2">Full-Stack Web Development</h3>
+            <p class="text-gray-400 mb-4">Learn to build modern web applications from front to back, with JavaScript, React, Node.js, and MongoDB.</p>
+            <div class="flex items-center mb-4">
+              <div class="h-1 flex-grow bg-gray-700 rounded-full">
+                <div class="h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" style="width: 85%"></div>
+              </div>
+              <span class="text-indigo-300 text-sm ml-2">85% match</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-gray-400"><i class="fas fa-clock mr-1"></i> 12 weeks</span>
+              <span class="text-gray-400"><i class="fas fa-users mr-1"></i> 24,567 learners</span>
+              <a href="#" class="text-indigo-400 hover:text-indigo-300">View path <i class="fas fa-arrow-right ml-1"></i></a>
+            </div>
+          </div>
+          
+          <!-- Path 2: Data Science -->
+          <div class="path-card dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+            <div class="mb-4">
+              <span class="bg-indigo-900/50 text-indigo-300 text-xs px-2 py-1 rounded">Data Science</span>
+              <span class="bg-blue-900/50 text-blue-400 text-xs px-2 py-1 rounded ml-2">Intermediate</span>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2">Data Science & Machine Learning</h3>
+            <p class="text-gray-400 mb-4">Master data analysis, visualization, and machine learning algorithms using Python, Pandas, and scikit-learn.</p>
+            <div class="flex items-center mb-4">
+              <div class="h-1 flex-grow bg-gray-700 rounded-full">
+                <div class="h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" style="width: 92%"></div>
+              </div>
+              <span class="text-indigo-300 text-sm ml-2">92% match</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-gray-400"><i class="fas fa-clock mr-1"></i> 16 weeks</span>
+              <span class="text-gray-400"><i class="fas fa-users mr-1"></i> 18,923 learners</span>
+              <a href="#" class="text-indigo-400 hover:text-indigo-300">View path <i class="fas fa-arrow-right ml-1"></i></a>
+            </div>
+          </div>
+          
+          <!-- Path 3: UX Design -->
+          <div class="path-card dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+            <div class="mb-4">
+              <span class="bg-indigo-900/50 text-indigo-300 text-xs px-2 py-1 rounded">UI/UX Design</span>
+              <span class="bg-green-900/50 text-green-400 text-xs px-2 py-1 rounded ml-2">Beginner-Friendly</span>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2">UI/UX Design Fundamentals</h3>
+            <p class="text-gray-400 mb-4">Learn user-centered design principles, interaction design, wireframing, prototyping, and usability testing.</p>
+            <div class="flex items-center mb-4">
+              <div class="h-1 flex-grow bg-gray-700 rounded-full">
+                <div class="h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" style="width: 78%"></div>
+              </div>
+              <span class="text-indigo-300 text-sm ml-2">78% match</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-gray-400"><i class="fas fa-clock mr-1"></i> 10 weeks</span>
+              <span class="text-gray-400"><i class="fas fa-users mr-1"></i> 15,342 learners</span>
+              <a href="#" class="text-indigo-400 hover:text-indigo-300">View path <i class="fas fa-arrow-right ml-1"></i></a>
+            </div>
+          </div>
+          
+          <!-- Path 4: Cloud Computing -->
+          <div class="path-card dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+            <div class="mb-4">
+              <span class="bg-indigo-900/50 text-indigo-300 text-xs px-2 py-1 rounded">Cloud Computing</span>
+              <span class="bg-blue-900/50 text-blue-400 text-xs px-2 py-1 rounded ml-2">Intermediate</span>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2">AWS Cloud Architect</h3>
+            <p class="text-gray-400 mb-4">Learn cloud architecture, AWS services, security, networking, and prepare for AWS certification exams.</p>
+            <div class="flex items-center mb-4">
+              <div class="h-1 flex-grow bg-gray-700 rounded-full">
+                <div class="h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" style="width: 88%"></div>
+              </div>
+              <span class="text-indigo-300 text-sm ml-2">88% match</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-gray-400"><i class="fas fa-clock mr-1"></i> 14 weeks</span>
+              <span class="text-gray-400"><i class="fas fa-users mr-1"></i> 12,786 learners</span>
+              <a href="#" class="text-indigo-400 hover:text-indigo-300">View path <i class="fas fa-arrow-right ml-1"></i></a>
+            </div>
+          </div>
+          
+          <!-- Path 5: Cybersecurity -->
+          <div class="path-card dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+            <div class="mb-4">
+              <span class="bg-indigo-900/50 text-indigo-300 text-xs px-2 py-1 rounded">Cybersecurity</span>
+              <span class="bg-purple-900/50 text-purple-400 text-xs px-2 py-1 rounded ml-2">Advanced</span>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2">Cybersecurity Specialist</h3>
+            <p class="text-gray-400 mb-4">Learn network security, ethical hacking, cryptography, security analysis, and incident response techniques.</p>
+            <div class="flex items-center mb-4">
+              <div class="h-1 flex-grow bg-gray-700 rounded-full">
+                <div class="h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" style="width: 75%"></div>
+              </div>
+              <span class="text-indigo-300 text-sm ml-2">75% match</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-gray-400"><i class="fas fa-clock mr-1"></i> 20 weeks</span>
+              <span class="text-gray-400"><i class="fas fa-users mr-1"></i> 9,482 learners</span>
+              <a href="#" class="text-indigo-400 hover:text-indigo-300">View path <i class="fas fa-arrow-right ml-1"></i></a>
+            </div>
+          </div>
+          
+          <!-- Path 6: Product Management -->
+          <div class="path-card dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+            <div class="mb-4">
+              <span class="bg-indigo-900/50 text-indigo-300 text-xs px-2 py-1 rounded">Product Management</span>
+              <span class="bg-blue-900/50 text-blue-400 text-xs px-2 py-1 rounded ml-2">Intermediate</span>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2">Product Management Essentials</h3>
+            <p class="text-gray-400 mb-4">Learn product strategy, user research, roadmapping, agile methodologies, and product analytics.</p>
+            <div class="flex items-center mb-4">
+              <div class="h-1 flex-grow bg-gray-700 rounded-full">
+                <div class="h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" style="width: 82%"></div>
+              </div>
+              <span class="text-indigo-300 text-sm ml-2">82% match</span>
+            </div>
+            <div class="flex justify-between items-center text-sm">
+              <span class="text-gray-400"><i class="fas fa-clock mr-1"></i> 8 weeks</span>
+              <span class="text-gray-400"><i class="fas fa-users mr-1"></i> 11,345 learners</span>
+              <a href="#" class="text-indigo-400 hover:text-indigo-300">View path <i class="fas fa-arrow-right ml-1"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Learning Resources -->
+      <div class="bg-gradient-to-r from-indigo-900/50 to-purple-900/50 rounded-lg p-6 mb-8">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+          <div class="mb-4 md:mb-0 md:mr-6">
+            <h3 class="text-xl font-semibold text-white mb-2">Personalized Learning Recommendations</h3>
+            <p class="text-gray-300">Get AI-powered learning recommendations based on your career goals and current skill level.</p>
+            <button class="mt-4 bg-white text-indigo-900 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm font-medium">
+              Get Custom Recommendations
+            </button>
+          </div>
+          <div class="flex-shrink-0 w-40 h-40 bg-indigo-600/20 rounded-lg flex items-center justify-center">
+            <i class="fas fa-graduation-cap text-indigo-400 text-5xl"></i>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Popular Learning Platforms -->
+      <h2 class="text-xl font-semibold text-white mb-4">Popular Learning Platforms</h2>
+      <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
+        <div class="dark-glassmorphism rounded-lg p-4 text-center">
+          <img src="https://via.placeholder.com/150" alt="Coursera" class="w-20 h-20 mx-auto mb-2">
+          <h3 class="font-medium text-white">Coursera</h3>
+        </div>
+        <div class="dark-glassmorphism rounded-lg p-4 text-center">
+          <img src="https://via.placeholder.com/150" alt="Udemy" class="w-20 h-20 mx-auto mb-2">
+          <h3 class="font-medium text-white">Udemy</h3>
+        </div>
+        <div class="dark-glassmorphism rounded-lg p-4 text-center">
+          <img src="https://via.placeholder.com/150" alt="edX" class="w-20 h-20 mx-auto mb-2">
+          <h3 class="font-medium text-white">edX</h3>
+        </div>
+        <div class="dark-glassmorphism rounded-lg p-4 text-center">
+          <img src="https://via.placeholder.com/150" alt="Pluralsight" class="w-20 h-20 mx-auto mb-2">
+          <h3 class="font-medium text-white">Pluralsight</h3>
+        </div>
+        <div class="dark-glassmorphism rounded-lg p-4 text-center">
+          <img src="https://via.placeholder.com/150" alt="LinkedIn Learning" class="w-20 h-20 mx-auto mb-2">
+          <h3 class="font-medium text-white">LinkedIn Learning</h3>
+        </div>
+        <div class="dark-glassmorphism rounded-lg p-4 text-center">
+          <img src="https://via.placeholder.com/150" alt="Codecademy" class="w-20 h-20 mx-auto mb-2">
+          <h3 class="font-medium text-white">Codecademy</h3>
+        </div>
+      </div>
+      
+      <!-- Career Field Selection -->
+      <div class="dark-glassmorphism rounded-xl p-6 mb-8 border border-indigo-500/20">
+        <h3 class="text-xl font-bold text-white mb-4">Select Your Career Field</h3>
+        <p class="text-gray-300 mb-6">Choose a field to explore tailored learning paths that will help you advance in your career.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors cursor-pointer">
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center mb-4">
+              <i class="fas fa-code text-white text-xl"></i>
+            </div>
+            <h4 class="text-white font-medium">Software Development</h4>
+            <p class="text-gray-400 text-sm mt-1">Web, mobile, desktop applications, APIs, and system development.</p>
+            <span class="text-indigo-400 text-sm mt-2 inline-flex items-center">
+              <span>24 paths available</span>
+              <i class="fas fa-arrow-right ml-2 text-xs"></i>
+            </span>
+          </div>
+          
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors cursor-pointer">
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center mb-4">
+              <i class="fas fa-palette text-white text-xl"></i>
+            </div>
+            <h4 class="text-white font-medium">Design</h4>
+            <p class="text-gray-400 text-sm mt-1">UX/UI design, graphic design, product design, and interaction design.</p>
+            <span class="text-indigo-400 text-sm mt-2 inline-flex items-center">
+              <span>18 paths available</span>
+              <i class="fas fa-arrow-right ml-2 text-xs"></i>
+            </span>
+          </div>
+          
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors cursor-pointer">
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-green-600 to-teal-600 flex items-center justify-center mb-4">
+              <i class="fas fa-database text-white text-xl"></i>
+            </div>
+            <h4 class="text-white font-medium">Data Science</h4>
+            <p class="text-gray-400 text-sm mt-1">Data analysis, machine learning, AI, and business intelligence.</p>
+            <span class="text-indigo-400 text-sm mt-2 inline-flex items-center">
+              <span>16 paths available</span>
+              <i class="fas fa-arrow-right ml-2 text-xs"></i>
+            </span>
+          </div>
+          
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors cursor-pointer">
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-yellow-600 to-amber-600 flex items-center justify-center mb-4">
+              <i class="fas fa-server text-white text-xl"></i>
+            </div>
+            <h4 class="text-white font-medium">DevOps & Cloud</h4>
+            <p class="text-gray-400 text-sm mt-1">Infrastructure, cloud services, containerization, and CI/CD pipelines.</p>
+            <span class="text-indigo-400 text-sm mt-2 inline-flex items-center">
+              <span>14 paths available</span>
+              <i class="fas fa-arrow-right ml-2 text-xs"></i>
+            </span>
+          </div>
+          
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors cursor-pointer">
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center mb-4">
+              <i class="fas fa-shield-alt text-white text-xl"></i>
+            </div>
+            <h4 class="text-white font-medium">Cybersecurity</h4>
+            <p class="text-gray-400 text-sm mt-1">Information security, pentesting, security engineering, and compliance.</p>
+            <span class="text-indigo-400 text-sm mt-2 inline-flex items-center">
+              <span>12 paths available</span>
+              <i class="fas fa-arrow-right ml-2 text-xs"></i>
+            </span>
+          </div>
+          
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors cursor-pointer">
+            <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-sky-600 to-cyan-600 flex items-center justify-center mb-4">
+              <i class="fas fa-tasks text-white text-xl"></i>
+            </div>
+            <h4 class="text-white font-medium">Product Management</h4>
+            <p class="text-gray-400 text-sm mt-1">Product strategy, roadmapping, agile methodologies, and user research.</p>
+            <span class="text-indigo-400 text-sm mt-2 inline-flex items-center">
+              <span>10 paths available</span>
+              <i class="fas fa-arrow-right ml-2 text-xs"></i>
+            </span>
+          </div>
+        </div>
+        
+        <div class="flex justify-center mt-6">
+          <button class="text-indigo-400 hover:text-indigo-300 text-sm flex items-center">
+            <span>View all 14 career fields</span>
+            <i class="fas fa-chevron-down ml-2"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Filter Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+        <div class="lg:col-span-1 dark-glassmorphism rounded-xl p-4 border border-indigo-500/20">
+          <h3 class="text-lg font-medium text-white mb-4">Refine Your Path</h3>
+          
+          <div class="space-y-6">
+            <div>
+              <h4 class="text-white text-sm font-medium mb-2">Experience Level</h4>
+              <div class="space-y-2">
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Beginner
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Intermediate
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Advanced
+                </label>
+              </div>
+            </div>
+            
+            <div>
+              <h4 class="text-white text-sm font-medium mb-2">Learning Format</h4>
+              <div class="space-y-2">
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Self-paced courses
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Guided programs
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Certifications
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Bootcamps
+                </label>
+              </div>
+            </div>
+            
+            <div>
+              <h4 class="text-white text-sm font-medium mb-2">Duration</h4>
+              <div class="space-y-2">
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Under 10 hours
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  10-20 hours
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  20-40 hours
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  40+ hours
+                </label>
+              </div>
+            </div>
+            
+            <div>
+              <h4 class="text-white text-sm font-medium mb-2">Popular Skills</h4>
+              <div class="flex flex-wrap gap-2">
+                <span class="skill-tag bg-gray-800/70 text-gray-300 px-2 py-1 rounded-md text-xs cursor-pointer hover:bg-indigo-600/60">JavaScript</span>
+                <span class="skill-tag bg-gray-800/70 text-gray-300 px-2 py-1 rounded-md text-xs cursor-pointer hover:bg-indigo-600/60">Python</span>
+                <span class="skill-tag bg-gray-800/70 text-gray-300 px-2 py-1 rounded-md text-xs cursor-pointer hover:bg-indigo-600/60">React</span>
+                <span class="skill-tag bg-gray-800/70 text-gray-300 px-2 py-1 rounded-md text-xs cursor-pointer hover:bg-indigo-600/60">Data Analysis</span>
+                <span class="skill-tag bg-gray-800/70 text-gray-300 px-2 py-1 rounded-md text-xs cursor-pointer hover:bg-indigo-600/60">UX Design</span>
+                <span class="skill-tag bg-gray-800/70 text-gray-300 px-2 py-1 rounded-md text-xs cursor-pointer hover:bg-indigo-600/60">AWS</span>
+                <span class="skill-tag bg-gray-800/70 text-gray-300 px-2 py-1 rounded-md text-xs cursor-pointer hover:bg-indigo-600/60">DevOps</span>
+                <span class="skill-tag bg-gray-800/70 text-gray-300 px-2 py-1 rounded-md text-xs cursor-pointer hover:bg-indigo-600/60">Machine Learning</span>
+              </div>
+            </div>
+            
+            <div>
+              <h4 class="text-white text-sm font-medium mb-2">Platforms</h4>
+              <div class="space-y-2">
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Coursera
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Udemy
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  edX
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  LinkedIn Learning
+                </label>
+                <label class="flex items-center text-sm text-gray-300">
+                  <input type="checkbox" class="rounded bg-gray-700 border-gray-600 text-indigo-600 focus:ring-indigo-500 mr-2">
+                  Pluralsight
+                </label>
+              </div>
+            </div>
+            
+            <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg text-sm transition-colors">
+              Apply Filters
+            </button>
+          </div>
+        </div>
+        
+        <div class="lg:col-span-3 space-y-6">
+          <!-- Recommended Learning Paths -->
+          <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-xl font-bold text-white">Recommended for You</h3>
+              <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm">View all</a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="learning-path-card dark-glassmorphism rounded-xl border border-indigo-500/20 overflow-hidden">
+                <div class="relative">
+                  <img src="https://via.placeholder.com/400x200/0f1729/6366f1?text=React+Development" alt="React Development" class="w-full h-40 object-cover">
+                  <span class="badge bg-indigo-600 text-white text-xs px-2 py-1 rounded-full">Trending</span>
+                </div>
+                <div class="p-4">
+                  <div class="flex justify-between items-start mb-2">
+                    <h4 class="text-white font-medium">Full-Stack React Developer</h4>
+                    <div class="flex items-center">
+                      <i class="fas fa-star text-yellow-400 text-xs"></i>
+                      <span class="text-gray-400 text-xs ml-1">4.8</span>
+                    </div>
+                  </div>
+                  <p class="text-gray-400 text-sm mb-3">Master modern web development with React, Node.js, and MongoDB.</p>
+                  <div class="flex flex-wrap gap-2 mb-3">
+                    <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">React</span>
+                    <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">Node.js</span>
+                    <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">MongoDB</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-400 text-xs">40 hours • Intermediate</span>
+                    <button class="text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg px-3 py-1 text-sm transition-colors">
+                      Start Path
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="learning-path-card dark-glassmorphism rounded-xl border border-indigo-500/20 overflow-hidden">
+                <div class="relative">
+                  <img src="https://via.placeholder.com/400x200/0f1729/6366f1?text=Data+Science" alt="Data Science" class="w-full h-40 object-cover">
+                  <span class="badge bg-green-600 text-white text-xs px-2 py-1 rounded-full">Beginner Friendly</span>
+                </div>
+                <div class="p-4">
+                  <div class="flex justify-between items-start mb-2">
+                    <h4 class="text-white font-medium">Data Science Fundamentals</h4>
+                    <div class="flex items-center">
+                      <i class="fas fa-star text-yellow-400 text-xs"></i>
+                      <span class="text-gray-400 text-xs ml-1">4.7</span>
+                    </div>
+                  </div>
+                  <p class="text-gray-400 text-sm mb-3">Learn data analysis, visualization, and machine learning basics.</p>
+                  <div class="flex flex-wrap gap-2 mb-3">
+                    <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">Python</span>
+                    <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">Data Analysis</span>
+                    <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">ML</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-gray-400 text-xs">30 hours • Beginner</span>
+                    <button class="text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg px-3 py-1 text-sm transition-colors">
+                      Start Path
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Popular Learning Paths -->
+          <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-xl font-bold text-white">Popular Learning Paths</h3>
+              <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm">View all</a>
+            </div>
+            
+            <div class="space-y-4">
+              <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors">
+                <div class="flex flex-col md:flex-row md:items-center">
+                  <div class="w-full md:w-64 h-32 rounded-lg overflow-hidden mb-4 md:mb-0 md:mr-4 flex-shrink-0">
+                    <img src="https://via.placeholder.com/400x200/0f1729/6366f1?text=AWS+Cloud" alt="AWS Cloud" class="w-full h-full object-cover">
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-start mb-2">
+                      <h4 class="text-white font-medium">AWS Cloud Practitioner to Architect</h4>
+                      <div class="flex items-center">
+                        <i class="fas fa-star text-yellow-400 text-xs"></i>
+                        <span class="text-gray-400 text-xs ml-1">4.9</span>
+                      </div>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Complete cloud journey from fundamentals to advanced architecture on AWS.</p>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                      <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">AWS</span>
+                      <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">Cloud</span>
+                      <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">DevOps</span>
+                      <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">Certification</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-400 text-xs">60 hours • Beginner to Advanced</span>
+                      <button class="text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg px-3 py-1 text-sm transition-colors">
+                        Start Path
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors">
+                <div class="flex flex-col md:flex-row md:items-center">
+                  <div class="w-full md:w-64 h-32 rounded-lg overflow-hidden mb-4 md:mb-0 md:mr-4 flex-shrink-0">
+                    <img src="https://via.placeholder.com/400x200/0f1729/6366f1?text=UX+Design" alt="UX Design" class="w-full h-full object-cover">
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-start mb-2">
+                      <h4 class="text-white font-medium">Complete UX/UI Design Bootcamp</h4>
+                      <div class="flex items-center">
+                        <i class="fas fa-star text-yellow-400 text-xs"></i>
+                        <span class="text-gray-400 text-xs ml-1">4.8</span>
+                      </div>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Learn user experience design from research to high-fidelity prototypes.</p>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                      <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">UX Design</span>
+                      <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">UI Design</span>
+                      <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">Figma</span>
+                      <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">User Research</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-400 text-xs">80 hours • Beginner to Intermediate</span>
+                      <button class="text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg px-3 py-1 text-sm transition-colors">
+                        Start Path
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors">
+                <div class="flex flex-col md:flex-row md:items-center">
+                  <div class="w-full md:w-64 h-32 rounded-lg overflow-hidden mb-4 md:mb-0 md:mr-4 flex-shrink-0">
+                    <img src="https://via.placeholder.com/400x200/0f1729/6366f1?text=Machine+Learning" alt="Machine Learning" class="w-full h-full object-cover">
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex justify-between items-start mb-2">
+                      <h4 class="text-white font-medium">Machine Learning Engineer Path</h4>
+                      <div class="flex items-center">
+                        <i class="fas fa-star text-yellow-400 text-xs"></i>
+                        <span class="text-gray-400 text-xs ml-1">4.7</span>
+                      </div>
+                    </div>
+                    <p class="text-gray-400 text-sm mb-3">Master machine learning algorithms, deep learning, and ML deployment.</p>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                      <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">Python</span>
+                      <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">TensorFlow</span>
+                      <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">ML Ops</span>
+                      <span class="bg-indigo-600/30 text-indigo-400 px-2 py-0.5 rounded text-xs">Deep Learning</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-400 text-xs">120 hours • Intermediate to Advanced</span>
+                      <button class="text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg px-3 py-1 text-sm transition-colors">
+                        Start Path
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- AMI Personalized Recommendations -->
+          <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20">
+            <div class="flex items-center mb-6">
+              <div class="w-10 h-10 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center shadow-lg mr-4">
+                <i class="fas fa-robot text-white"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-white">AMI Recommendations</h3>
+                <p class="text-gray-400 text-sm">Personalized learning suggestions based on your career goals</p>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20">
+                <div class="flex items-start">
+                  <div class="w-10 h-10 rounded-lg bg-blue-600/30 flex items-center justify-center mr-3 flex-shrink-0">
+                    <i class="fas fa-code text-blue-400"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-white font-medium">Enhance Your Frontend Skills</h4>
+                    <p class="text-gray-400 text-sm mt-1">Based on your profile and job interests, improving your React & TypeScript skills could increase interview success by 28%.</p>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                      <a href="#" class="text-xs bg-indigo-600/40 text-indigo-300 px-2 py-1 rounded-md hover:bg-indigo-600/60 transition-colors">Advanced React Patterns</a>
+                      <a href="#" class="text-xs bg-indigo-600/40 text-indigo-300 px-2 py-1 rounded-md hover:bg-indigo-600/60 transition-colors">TypeScript Mastery</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20">
+                <div class="flex items-start">
+                  <div class="w-10 h-10 rounded-lg bg-green-600/30 flex items-center justify-center mr-3 flex-shrink-0">
+                    <i class="fas fa-certificate text-green-400"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-white font-medium">Recommended Certification</h4>
+                    <p class="text-gray-400 text-sm mt-1">AWS Certified Developer could boost your salary potential by 15% and is relevant to 64% of jobs you've viewed.</p>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                      <a href="#" class="text-xs bg-indigo-600/40 text-indigo-300 px-2 py-1 rounded-md hover:bg-indigo-600/60 transition-colors">AWS Developer Certification</a>
+                      <a href="#" class="text-xs bg-indigo-600/40 text-indigo-300 px-2 py-1 rounded-md hover:bg-indigo-600/60 transition-colors">Prep Course</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20">
+                <div class="flex items-start">
+                  <div class="w-10 h-10 rounded-lg bg-purple-600/30 flex items-center justify-center mr-3 flex-shrink-0">
+                    <i class="fas fa-chart-network text-purple-400"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-white font-medium">Fill Your Skill Gap</h4>
+                    <p class="text-gray-400 text-sm mt-1">Adding CI/CD pipeline knowledge would complete your DevOps profile and match you with 37% more senior positions.</p>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                      <a href="#" class="text-xs bg-indigo-600/40 text-indigo-300 px-2 py-1 rounded-md hover:bg-indigo-600/60 transition-colors">GitHub Actions</a>
+                      <a href="#" class="text-xs bg-indigo-600/40 text-indigo-300 px-2 py-1 rounded-md hover:bg-indigo-600/60 transition-colors">Jenkins</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20">
+                <div class="flex items-start">
+                  <div class="w-10 h-10 rounded-lg bg-yellow-600/30 flex items-center justify-center mr-3 flex-shrink-0">
+                    <i class="fas fa-bolt text-yellow-400"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-white font-medium">Trending in Your Field</h4>
+                    <p class="text-gray-400 text-sm mt-1">GraphQL is trending in web development. Learning this skill now could put you ahead of 78% of your peers.</p>
+                    <div class="mt-2 flex flex-wrap gap-2">
+                      <a href="#" class="text-xs bg-indigo-600/40 text-indigo-300 px-2 py-1 rounded-md hover:bg-indigo-600/60 transition-colors">GraphQL Fundamentals</a>
+                      <a href="#" class="text-xs bg-indigo-600/40 text-indigo-300 px-2 py-1 rounded-md hover:bg-indigo-600/60 transition-colors">Apollo Server</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Learning Platforms -->
+      <div class="dark-glassmorphism rounded-xl p-6 border border-indigo-500/20 mb-8">
+        <h3 class="text-xl font-bold text-white mb-4">Popular Learning Platforms</h3>
+        <p class="text-gray-300 mb-6">We've partnered with leading education platforms to provide you with high-quality content.</p>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors text-center">
+            <img src="https://via.placeholder.com/100/0f1729/ffffff?text=Coursera" alt="Coursera" class="w-16 h-16 object-contain mx-auto mb-2">
+            <h4 class="text-white text-sm font-medium">Coursera</h4>
+            <p class="text-gray-400 text-xs mt-1">3,000+ courses</p>
+          </div>
+          
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors text-center">
+            <img src="https://via.placeholder.com/100/0f1729/ffffff?text=Udemy" alt="Udemy" class="w-16 h-16 object-contain mx-auto mb-2">
+            <h4 class="text-white text-sm font-medium">Udemy</h4>
+            <p class="text-gray-400 text-xs mt-1">5,000+ courses</p>
+          </div>
+          
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors text-center">
+            <img src="https://via.placeholder.com/100/0f1729/ffffff?text=edX" alt="edX" class="w-16 h-16 object-contain mx-auto mb-2">
+            <h4 class="text-white text-sm font-medium">edX</h4>
+            <p class="text-gray-400 text-xs mt-1">2,500+ courses</p>
+          </div>
+          
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors text-center">
+            <img src="https://via.placeholder.com/100/0f1729/ffffff?text=LinkedIn" alt="LinkedIn Learning" class="w-16 h-16 object-contain mx-auto mb-2">
+            <h4 class="text-white text-sm font-medium">LinkedIn Learning</h4>
+            <p class="text-gray-400 text-xs mt-1">4,000+ courses</p>
+          </div>
+          
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors text-center">
+            <img src="https://via.placeholder.com/100/0f1729/ffffff?text=Pluralsight" alt="Pluralsight" class="w-16 h-16 object-contain mx-auto mb-2">
+            <h4 class="text-white text-sm font-medium">Pluralsight</h4>
+            <p class="text-gray-400 text-xs mt-1">2,800+ courses</p>
+          </div>
+          
+          <div class="dark-glassmorphism rounded-xl p-4 border border-indigo-500/20 hover:border-indigo-500/60 transition-colors text-center">
+            <img src="https://via.placeholder.com/100/0f1729/ffffff?text=Codecademy" alt="Codecademy" class="w-16 h-16 object-contain mx-auto mb-2">
+            <h4 class="text-white text-sm font-medium">Codecademy</h4>
+            <p class="text-gray-400 text-xs mt-1">1,500+ courses</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <!-- AMI Chatbot Container -->
+  <div id="ami-chatbot">
+    <!-- Content will be dynamically generated by ami-chatbot.js -->
+  </div>
+  
+  <!-- Initialize -->
+  <script src="init.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize user info
+      const userName = localStorage.getItem('userName') || 'User';
+      const userEmail = localStorage.getItem('userEmail') || 'user@example.com';
+      
+      document.getElementById('user-name').textContent = userName;
+      document.getElementById('user-menu-name').textContent = userName;
+      document.getElementById('user-menu-email').textContent = userEmail;
+      
+      // Set user initials
+      const initials = userName.charAt(0).toUpperCase();
+      document.getElementById('user-initials').textContent = initials;
+      
+      // Initialize dropdown menus
+      initializeDropdownMenu('user-menu-button', 'user-menu');
+      initializeDropdownMenu('filter-button', 'filter-menu');
+      
+      // Mobile sidebar toggle
+      const sidebarToggle = document.getElementById('sidebar-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebar-overlay');
+      
+      sidebarToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('hidden');
+        sidebarOverlay.classList.toggle('hidden');
+      });
+      
+      sidebarOverlay.addEventListener('click', function() {
+        sidebar.classList.add('hidden');
+        sidebarOverlay.classList.add('hidden');
+      });
+      
+      // Handle career field selection
+      const careerFields = document.querySelectorAll('.dark-glassmorphism.rounded-xl.p-4.border.border-indigo-500\\/20.hover\\:border-indigo-500\\/60');
+      
+      careerFields.forEach(field => {
+        field.addEventListener('click', function() {
+          // In a real app, this would navigate to a filtered view of learning paths
+          // For demo, we'll just highlight the selected field
+          careerFields.forEach(f => {
+            f.classList.remove('border-indigo-500');
+            f.classList.add('border-indigo-500/20');
+          });
+          
+          this.classList.remove('border-indigo-500/20');
+          this.classList.add('border-indigo-500');
+        });
+      });
+      
+      // Responsive behavior
+      function handleResize() {
+        if (window.innerWidth >= 1024) {
+          sidebar.classList.remove('hidden');
+          sidebarOverlay.classList.add('hidden');
+        } else {
+          sidebar.classList.add('hidden');
+        }
+      }
+      
+      window.addEventListener('resize', handleResize);
+      handleResize();
+    });
+    
+    function initializeDropdownMenu(buttonId, menuId) {
+      const button = document.getElementById(buttonId);
+      const menu = document.getElementById(menuId);
+      
+      if (button && menu) {
+        button.addEventListener('click', function() {
+          menu.classList.toggle('hidden');
+        });
+        
+        document.addEventListener('click', function(event) {
+          if (!button.contains(event.target) && !menu.contains(event.target)) {
+            menu.classList.add('hidden');
+          }
+        });
+      }
+    }
+  </script>
+</body>
+</html> 

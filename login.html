@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Career Mentor</title>
+  
+  <!-- External libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <!-- Custom styles -->
+  <style>
+    /* Base styles */
+    body {
+      background-color: #0f1729;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(51, 65, 85, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 75% 75%, rgba(79, 70, 229, 0.1) 0%, transparent 40%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    /* Glassmorphism effect */
+    .dark-glassmorphism {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(10px);
+    }
+    
+    /* Glowing effect */
+    .glow {
+      box-shadow: 0 0 15px rgba(79, 70, 229, 0.5);
+    }
+    
+    /* Input field styles */
+    .form-input {
+      background-color: rgba(17, 24, 39, 0.6) !important;
+      color: white !important;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+      border-color: rgba(99, 102, 241, 0.8);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+      background-color: rgba(17, 24, 39, 0.8) !important;
+    }
+    
+    .form-input::placeholder {
+      color: rgba(156, 163, 175, 0.7);
+    }
+    
+    /* Input validation styles */
+    .input-error {
+      border-color: rgba(239, 68, 68, 0.6) !important;
+    }
+    
+    .error-text {
+      color: #ef4444;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+    }
+    
+    /* Social login buttons */
+    .social-login-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .social-login-btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+    
+    /* Error state for inputs */
+    .form-input.error {
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+    
+    .form-input.error:focus {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+  <div class="container mx-auto px-4 h-screen flex items-center justify-center">
+    <div class="w-full max-w-md">
+      <div class="dark-glassmorphism rounded-2xl p-8 border border-indigo-500/20 shadow-xl">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+          <p class="text-gray-400">Sign in to continue to Career Mentor</p>
+        </div>
+        
+        <form id="login-form" class="space-y-5">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+            <div class="relative">
+              <input 
+                type="email" 
+                id="email" 
+                class="form-input w-full rounded-lg px-4 py-2.5 pl-10 text-white focus:outline-none" 
+                placeholder="you@example.com" 
+                required
+              />
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <i class="fas fa-envelope text-indigo-400"></i>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
+              <a href="#" class="text-xs text-indigo-400 hover:text-indigo-300">Forgot password?</a>
+            </div>
+            <div class="relative">
+              <input 
+                type="password" 
+                id="password" 
+                class="form-input w-full rounded-lg px-4 py-2.5 pl-10 text-white focus:outline-none" 
+                placeholder="Enter your password" 
+                required
+              />
+              <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <i class="fas fa-lock text-indigo-400"></i>
+              </div>
+              <button 
+                type="button" 
+                id="toggle-password" 
+                class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="flex items-center">
+            <input type="checkbox" id="remember-me" class="h-4 w-4 rounded border-gray-600 bg-gray-700 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-gray-800">
+            <label for="remember-me" class="ml-2 block text-sm text-gray-300">Remember me</label>
+          </div>
+          
+          <button 
+            type="submit" 
+            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-2.5 px-4 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-200"
+          >
+            Sign In
+          </button>
+        </form>
+        
+        <div class="mt-6">
+          <div class="relative">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-gray-600"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-2 bg-gray-900/60 text-gray-400">Or continue with</span>
+            </div>
+          </div>
+          
+          <div class="mt-6 grid grid-cols-3 gap-3">
+            <button 
+              type="button" 
+              class="social-login-btn bg-white/5 border border-gray-600 hover:border-indigo-400/70 rounded-lg py-2.5 px-4 flex justify-center items-center text-gray-300 hover:text-white transition-all duration-200"
+              id="google-login"
+            >
+              <i class="fab fa-google text-[#DB4437]"></i>
+            </button>
+            <button 
+              type="button" 
+              class="social-login-btn bg-white/5 border border-gray-600 hover:border-indigo-400/70 rounded-lg py-2.5 px-4 flex justify-center items-center text-gray-300 hover:text-white transition-all duration-200"
+              id="github-login"
+            >
+              <i class="fab fa-github text-white"></i>
+            </button>
+            <button 
+              type="button" 
+              class="social-login-btn bg-white/5 border border-gray-600 hover:border-indigo-400/70 rounded-lg py-2.5 px-4 flex justify-center items-center text-gray-300 hover:text-white transition-all duration-200"
+              id="linkedin-login"
+            >
+              <i class="fab fa-linkedin text-[#0A66C2]"></i>
+            </button>
+          </div>
+        </div>
+        
+        <p class="text-center mt-6 text-sm text-gray-400">
+          Don't have an account? <a href="signup.html" class="text-indigo-400 hover:text-indigo-300">Sign up</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- AMI Chatbot Container -->
+  <div id="ami-chatbot">
+    <!-- Content will be dynamically generated by ami-chatbot.js -->
+  </div>
+  
+  <!-- Initialize -->
+  <script src="init.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Toggle password visibility
+      const togglePassword = document.getElementById('toggle-password');
+      const passwordInput = document.getElementById('password');
+      
+      if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+          const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+          passwordInput.setAttribute('type', type);
+          
+          // Toggle icon
+          const icon = this.querySelector('i');
+          icon.classList.toggle('fa-eye');
+          icon.classList.toggle('fa-eye-slash');
+        });
+      }
+      
+      // Form validation
+      const loginForm = document.getElementById('login-form');
+      const emailInput = document.getElementById('email');
+      
+      if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          let isValid = true;
+          
+          // Simple email validation
+          if (!emailInput.value.includes('@')) {
+            emailInput.classList.add('error');
+            isValid = false;
+          } else {
+            emailInput.classList.remove('error');
+          }
+          
+          if (isValid) {
+            // Store dummy user data in localStorage
+            localStorage.setItem('userName', 'Alex Johnson');
+            localStorage.setItem('userEmail', emailInput.value);
+            localStorage.setItem('isLoggedIn', 'true');
+            
+            // Redirect to dashboard
+            window.location.href = 'dashboard.html';
+          }
+        });
+      }
+      
+      // Social login handlers
+      const googleLogin = document.getElementById('google-login');
+      const githubLogin = document.getElementById('github-login');
+      const linkedinLogin = document.getElementById('linkedin-login');
+      
+      if (googleLogin) {
+        googleLogin.addEventListener('click', function() {
+          // In a real application, this would redirect to Google OAuth flow
+          console.log('Initiating Google login flow');
+          
+          // For demo purposes, simulate login
+          localStorage.setItem('userName', 'Alex Johnson');
+          localStorage.setItem('userEmail', 'alex.johnson@gmail.com');
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('loginMethod', 'google');
+          
+          window.location.href = 'dashboard.html';
+        });
+      }
+      
+      if (githubLogin) {
+        githubLogin.addEventListener('click', function() {
+          // In a real application, this would redirect to GitHub OAuth flow
+          console.log('Initiating GitHub login flow');
+          
+          // For demo purposes, simulate login
+          localStorage.setItem('userName', 'Alex Johnson');
+          localStorage.setItem('userEmail', 'alex.johnson@github.com');
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('loginMethod', 'github');
+          
+          window.location.href = 'dashboard.html';
+        });
+      }
+      
+      if (linkedinLogin) {
+        linkedinLogin.addEventListener('click', function() {
+          // In a real application, this would redirect to LinkedIn OAuth flow
+          console.log('Initiating LinkedIn login flow');
+          
+          // For demo purposes, simulate login
+          localStorage.setItem('userName', 'Alex Johnson');
+          localStorage.setItem('userEmail', 'alex.johnson@linkedin.com');
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('loginMethod', 'linkedin');
+          
+          window.location.href = 'dashboard.html';
+        });
+      }
+    });
+  </script>
+</body>
+</html> 

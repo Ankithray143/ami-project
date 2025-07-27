@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - Career Mentor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #0a0a1f;
+      background-image: 
+        radial-gradient(circle at 15% 25%, rgba(65, 105, 225, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 85% 75%, rgba(138, 43, 226, 0.2) 0%, transparent 50%);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f0f0ff;
+    }
+    
+    .cyber-container {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      padding: 2.5rem;
+      background: rgba(25, 25, 55, 0.8);
+      backdrop-filter: blur(12px);
+      border-radius: 16px;
+      border: 1px solid rgba(100, 100, 255, 0.2);
+      box-shadow: 
+        0 0 20px rgba(65, 105, 225, 0.2),
+        0 0 40px rgba(65, 105, 225, 0.1);
+      overflow: hidden;
+    }
+    
+    .cyber-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(100, 100, 255, 0.05), transparent);
+      z-index: -1;
+    }
+    
+    .cyber-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: 30px 30px;
+      background-image: 
+        linear-gradient(to right, rgba(100, 100, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(100, 100, 255, 0.05) 1px, transparent 1px);
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: -1;
+    }
+    
+    .cyber-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: transparent;
+      background-image: linear-gradient(135deg, #4f46e5, #9376f8);
+      background-clip: text;
+      -webkit-background-clip: text;
+      text-shadow: 0 0 15px rgba(100, 100, 255, 0.5);
+    }
+    
+    .cyber-input {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    
+    .cyber-input input {
+      width: 100%;
+      padding: 1rem 1rem 1rem 3rem;
+      background: rgba(30, 30, 60, 0.8);
+      border: 1px solid rgba(100, 100, 255, 0.3);
+      border-radius: 8px;
+      color: #f0f0ff;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 5px rgba(100, 100, 255, 0.1) inset;
+    }
+    
+    .cyber-input input:focus {
+      outline: none;
+      border-color: rgba(100, 100, 255, 0.8);
+      box-shadow: 
+        0 0 0 2px rgba(100, 100, 255, 0.2),
+        0 0 10px rgba(100, 100, 255, 0.2) inset;
+    }
+    
+    .cyber-input .icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(100, 100, 255, 0.7);
+    }
+    
+    .cyber-button {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+    }
+    
+    .cyber-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+    }
+    
+    .cyber-button::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right, 
+        rgba(255, 255, 255, 0) 0%, 
+        rgba(255, 255, 255, 0.1) 50%, 
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: rotate(30deg);
+      transition: transform 0.5s ease;
+    }
+    
+    .cyber-button:hover::after {
+      transform: rotate(30deg) translate(10%, 10%);
+    }
+    
+    .cyber-divider {
+      display: flex;
+      align-items: center;
+      margin: 1.5rem 0;
+    }
+    
+    .cyber-divider::before, .cyber-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(100, 100, 255, 0.3);
+    }
+    
+    .cyber-divider-text {
+      margin: 0 1rem;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+    
+    .google-button {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(30, 30, 60, 0.8);
+      border: 1px solid rgba(100, 100, 255, 0.3);
+      border-radius: 8px;
+      color: #f0f0ff;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .google-button:hover {
+      background: rgba(40, 40, 80, 0.8);
+      border-color: rgba(100, 100, 255, 0.5);
+    }
+    
+    .google-button img {
+      margin-right: 0.75rem;
+      height: 1.5rem;
+    }
+    
+    .cyber-footer {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .cyber-footer a {
+      color: rgba(100, 100, 255, 0.8);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    .cyber-footer a:hover {
+      color: rgba(100, 100, 255, 1);
+      text-decoration: underline;
+    }
+    
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(100, 100, 255, 0.7);
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    
+    .password-toggle:hover {
+      color: rgba(100, 100, 255, 1);
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(100, 100, 255, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(100, 100, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(100, 100, 255, 0); }
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    .ami-button {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      background: rgba(30, 30, 60, 0.8);
+      border: 1px solid rgba(100, 100, 255, 0.3);
+      border-radius: 8px;
+      color: #f0f0ff;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      margin-top: 1.5rem;
+    }
+    
+    .ami-button:hover {
+      background: rgba(40, 40, 80, 0.8);
+      border-color: rgba(100, 100, 255, 0.5);
+    }
+    
+    .ami-button i {
+      margin-right: 0.5rem;
+      animation: float 3s infinite ease-in-out;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+      100% { transform: translateY(0px); }
+    }
+    
+    /* Checkbox styling */
+    .cyber-checkbox {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .cyber-checkbox input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 1.2rem;
+      height: 1.2rem;
+      background: rgba(30, 30, 60, 0.8);
+      border: 1px solid rgba(100, 100, 255, 0.3);
+      border-radius: 4px;
+      margin-right: 0.5rem;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .cyber-checkbox input[type="checkbox"]:checked {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      border-color: transparent;
+    }
+    
+    .cyber-checkbox input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      color: white;
+      font-size: 0.8rem;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .cyber-checkbox label {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    
+    /* back link */
+    .back-link {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+    
+    .back-link:hover {
+      color: rgba(100, 100, 255, 0.8);
+    }
+    
+    .back-link i {
+      margin-right: 0.5rem;
+      transition: transform 0.3s ease;
+    }
+    
+    .back-link:hover i {
+      transform: translateX(-3px);
+    }
+    
+    .cyber-error {
+      font-size: 0.85rem;
+      color: #ff6b6b;
+      margin-top: 0.5rem;
+      display: none;
+    }
+    
+    .invalid-input {
+      border-color: #ff6b6b !important;
+    }
+  </style>
+</head>
+
+<body>
+  <a href="index.html" class="back-link">
+    <i class="fas fa-arrow-left"></i> Back to Home
+  </a>
+  
+  <div class="cyber-container">
+    <div class="cyber-grid"></div>
+    
+    <!-- Logo -->
+    <div class="text-center mb-6">
+      <h1 class="cyber-title">Career Mentor</h1>
+      <p class="text-gray-400 mb-8">Create your account</p>
+    </div>
+    
+    <!-- Signup Form -->
+    <form id="signup-form">
+      <div class="cyber-input">
+        <i class="fas fa-user icon"></i>
+        <input type="text" id="name" name="name" placeholder="Full name" required>
+      </div>
+      
+      <div class="cyber-input">
+        <i class="fas fa-envelope icon"></i>
+        <input type="email" id="email" name="email" placeholder="Email address" required>
+      </div>
+      
+      <div class="cyber-input">
+        <i class="fas fa-lock icon"></i>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <i class="password-toggle fas fa-eye" id="password-toggle"></i>
+        <div class="cyber-error" id="password-error">Password must be at least 6 characters</div>
+      </div>
+      
+      <div class="cyber-input">
+        <i class="fas fa-lock icon"></i>
+        <input type="password" id="password-confirm" name="password-confirm" placeholder="Confirm password" required>
+        <i class="password-toggle fas fa-eye" id="password-confirm-toggle"></i>
+        <div class="cyber-error" id="password-match-error">Passwords don't match</div>
+      </div>
+      
+      <div class="cyber-checkbox">
+        <input type="checkbox" id="agree-terms" name="agree-terms" required>
+        <label for="agree-terms">I agree to the <a href="#" class="text-indigo-400 hover:text-indigo-300">Terms of Service</a> and <a href="#" class="text-indigo-400 hover:text-indigo-300">Privacy Policy</a></label>
+      </div>
+      
+      <button type="submit" class="cyber-button pulse">
+        Create Account
+        <span class="absolute right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+          <i class="fas fa-arrow-right"></i>
+        </span>
+      </button>
+    </form>
+    
+    <div class="cyber-divider">
+      <div class="cyber-divider::before"></div>
+      <span class="cyber-divider-text">OR</span>
+      <div class="cyber-divider::after"></div>
+    </div>
+    
+    <button id="google-signup" class="google-button">
+      <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
+      <span>Sign up with Google</span>
+    </button>
+    
+    <div class="cyber-footer">
+      <p>
+        Already have an account? <a href="login.html">Sign in</a>
+      </p>
+    </div>
+    
+    <button id="ami-button" class="ami-button mx-auto">
+      <i class="fas fa-robot"></i>
+      <span>Need help? Ask AMI</span>
+    </button>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="ami-chatbot.js"></script>
+  <script src="initialize.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Password visibility toggles
+      const passwordField = document.getElementById('password');
+      const passwordToggle = document.getElementById('password-toggle');
+      const passwordConfirmField = document.getElementById('password-confirm');
+      const passwordConfirmToggle = document.getElementById('password-confirm-toggle');
+      
+      if (passwordField && passwordToggle) {
+        passwordToggle.addEventListener('click', function() {
+          if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            passwordToggle.classList.remove('fa-eye');
+            passwordToggle.classList.add('fa-eye-slash');
+          } else {
+            passwordField.type = 'password';
+            passwordToggle.classList.remove('fa-eye-slash');
+            passwordToggle.classList.add('fa-eye');
+          }
+        });
+      }
+      
+      if (passwordConfirmField && passwordConfirmToggle) {
+        passwordConfirmToggle.addEventListener('click', function() {
+          if (passwordConfirmField.type === 'password') {
+            passwordConfirmField.type = 'text';
+            passwordConfirmToggle.classList.remove('fa-eye');
+            passwordConfirmToggle.classList.add('fa-eye-slash');
+          } else {
+            passwordConfirmField.type = 'password';
+            passwordConfirmToggle.classList.remove('fa-eye-slash');
+            passwordConfirmToggle.classList.add('fa-eye');
+          }
+        });
+      }
+      
+      // Password validation
+      const passwordError = document.getElementById('password-error');
+      const passwordMatchError = document.getElementById('password-match-error');
+      
+      // Validate password strength
+      if (passwordField && passwordError) {
+        passwordField.addEventListener('input', function() {
+          if (this.value.length < 6) {
+            passwordError.style.display = 'block';
+            this.classList.add('invalid-input');
+          } else {
+            passwordError.style.display = 'none';
+            this.classList.remove('invalid-input');
+          }
+        });
+      }
+      
+      // Validate password match
+      if (passwordField && passwordConfirmField && passwordMatchError) {
+        const validatePasswordMatch = function() {
+          if (passwordConfirmField.value && passwordField.value !== passwordConfirmField.value) {
+            passwordMatchError.style.display = 'block';
+            passwordConfirmField.classList.add('invalid-input');
+          } else {
+            passwordMatchError.style.display = 'none';
+            passwordConfirmField.classList.remove('invalid-input');
+          }
+        };
+        
+        passwordField.addEventListener('input', validatePasswordMatch);
+        passwordConfirmField.addEventListener('input', validatePasswordMatch);
+      }
+      
+      // Form validation before submit
+      const signupForm = document.getElementById('signup-form');
+      const agreeTerms = document.getElementById('agree-terms');
+      
+      if (signupForm) {
+        signupForm.addEventListener('submit', function(e) {
+          let isValid = true;
+          
+          // Validate password length
+          if (passwordField.value.length < 6) {
+            passwordError.style.display = 'block';
+            passwordField.classList.add('invalid-input');
+            isValid = false;
+          }
+          
+          // Validate password match
+          if (passwordField.value !== passwordConfirmField.value) {
+            passwordMatchError.style.display = 'block';
+            passwordConfirmField.classList.add('invalid-input');
+            isValid = false;
+          }
+          
+          // Validate terms agreement
+          if (!agreeTerms.checked) {
+            isValid = false;
+          }
+          
+          if (!isValid) {
+            e.preventDefault();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html> 
